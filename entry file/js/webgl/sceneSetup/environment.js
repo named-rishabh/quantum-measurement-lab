@@ -9,6 +9,6 @@ export function addEnvironment(scene,renderer){
     scene.environment =
         pmrem.fromScene(
             new RoomEnvironment(),
-            0.06
+            0.01
         ).texture;
 }

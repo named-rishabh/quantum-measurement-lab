@@ -20,6 +20,10 @@ export default class Renderer {
         this.renderer.setPixelRatio(
             Math.min(window.devicePixelRatio, 2)
         );
+         window.addEventListener('click', () => {
+         console.log(renderer.info)
+        });
+
     }
 
     resize(width, height) {
