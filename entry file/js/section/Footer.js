@@ -51,6 +51,11 @@ export default class Footer{
                             <li data-target="#lab" id="lab" class="hover:text-primary transition-colors group-hover:translate-x-2">
                                 Laboratory                                          
                             </li>
+
+                            <li data-target="#experiments" id="lab" class="hover:text-primary transition-colors group-hover:translate-x-2">
+                                Experiments                                          
+                            </li>
+
                             <li data-target="#team" id="team" class="hover:text-primary transition-colors group-hover:translate-x-2">
                                 Team                                
                             </li>
@@ -141,6 +146,9 @@ export default class Footer{
                     </li>
                     <li data-target="#lab" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
                         Laboratory                                          
+                    </li>
+                    <li data-target="#experiments" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
+                        Experiments                                          
                     </li>
                     <li data-target="#team" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
                         Team                                
