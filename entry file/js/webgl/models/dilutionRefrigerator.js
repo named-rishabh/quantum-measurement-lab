@@ -265,8 +265,6 @@ export default class DilutionRefrigerator {
              color:0xD4AF37,
              metalness:1,
              roughness:0.15,
-             clearcoat :0.4,
-             clearcoatRoughness :0
              });
              return new THREE.Mesh(hexnutGeom,hexnutmaterial);
          
@@ -533,9 +531,7 @@ export default class DilutionRefrigerator {
          const attenutormaterial = new THREE.MeshStandardMaterial({
              color:0xD4AF37,
              metalness:1,
-             roughness:0.15,
-             clearcoat :0.4,
-             clearcoatRoughness :0
+             roughness: 0.15
          });
          const attmainbody = new THREE.Mesh(attenutorgeometry,attenutormaterial);
          
