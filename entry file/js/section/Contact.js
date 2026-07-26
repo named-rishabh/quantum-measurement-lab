@@ -80,7 +80,7 @@ export default class Contact{
                         your thoughts.
                     </p>
 
-                    <button id='getInTouch' class="mt-10 w-fit px-7 py-3 rounded-full bg-primary-light text-white font-medium hover:bg-primary hover:scale-105 transition-transform duration-300">
+                    <button id='getInTouch' class="mt-10 w-fit px-7 py-3 rounded-xl bg-primary-light text-white font-medium hover:bg-primary hover:scale-102 transition-transform duration-300">
                         Get In Touch
                     </button>
                 </div>
@@ -155,7 +155,7 @@ export default class Contact{
                 your thoughts.
             </p>
 
-            <button id="getInTouch" class="mt-10 w-fit px-8 py-3.5 rounded-full bg-primary text-text font-semibold hover:opacity-90 hover:scale-105 transition-all duration-300 shadow-md">
+            <button id="getInTouch" class="mt-10 w-fit px-8 py-3.5 rounded-xl bg-primary text-text font-semibold hover:opacity-90 hover:scale-103 transition-all duration-300 shadow-md">
                 Get In Touch
             </button>
         </div>
