@@ -12,7 +12,7 @@ export default class Controls {
         this.controls.enablePan = true;
         this.controls.minPolarAngle = 0;
         this.controls.maxPolarAngle = (Math.PI/2 - Math.PI/60);
-        this.controls.maxDistance = 50;
+        this.controls.maxDistance = 65;
         this.controls.minDistance = 5;
         
     }

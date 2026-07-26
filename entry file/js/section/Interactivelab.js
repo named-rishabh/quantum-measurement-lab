@@ -19,22 +19,13 @@ export default class InteractiveLab{
                 Laboratory
             </span>
         </div>
-        <div class='h-[82vh] w-screen '>
+        <div class='h-[82vh] w-screen mb-2'>
             
             <video class='webgl inset-0 flex ml-2 bg-panel h-[80vh] w-[96vw] items-center justify-center rounded-b-lg object-cover'  autoplay muted loop playsinline>
                 <source src="../assets/video/background-video.mp4" type="video/mp4">
             </video>
         </div>
-        <div class='flex items-center justify-center gap-3 '>
-            <button id='first' class="flex flex-col px-7 py-3 rounded-md bg-panel text-lg text-primary font-extrabold hover:scale-105 hover:bg-panel-alt transition-transform duration-300">
-                    <span class='text-xl'>Single - Tone</span>
-                    <span>Spectroscopy</span>
-            </button>
-            <button id='second' class="flex flex-col px-7 py-3 rounded-md bg-panel text-lg text-primary font-extrabold hover:scale-105 hover:bg-panel-alt transition-transform duration-300 border-border">
-                    <span class='text-xl'>Two - Tone</span>
-                    <span >Spectroscopy</span>
-            </button>
-        </div>
+        
         `
         document.body.appendChild(this.element);
     };
@@ -46,20 +37,15 @@ export default class InteractiveLab{
         <span class="px-4 py-1 rounded-full border border-border text-xs uppercase tracking-[0.3em] mt-4 mb-2">
             Laboratory
         </span>
-        <div class='canvas_wrapper min-h-[90vh] w-[80vw]'>
+        <div class='canvas_wrapper min-h-[90vh] w-[80vw] mb-2'>
             <canvas class='webgl max-h-[90vh] max-w-[80vw] rounded-lg border-border'></canvas>
-        
-        <div class='flex items-center justify-center gap-8 mt-2'>
-            <button id='first' class="flex flex-col px-7 py-3 rounded-md bg-primary-light text-lg text-text font-extrabold hover:scale-105 hover:bg-primary transition-transform duration-300">
-                    <span class='text-xl'>Single - Tone</span>
-                    <span>Spectroscopy</span>
-            </button>
-            <button id='second' class="flex flex-col px-7 py-3 rounded-md bg-primary-light text-lg text-text font-extrabold hover:scale-105 hover:bg-primary transition-transform duration-300">
-                    <span class='text-xl'>Two - Tone</span>
-                    <span >Spectroscopy</span>
-            </button>
+            <div class="flex pointer-events-none absolute left-4 top-4 z-10  text-sm text-text justify-end gap-2">
+                <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm">💡 <b>Scroll</b> to zoom/overview </span>
+                <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm"> <b>Double-click</b> for detailed exploration of lab</span>
+            </div>
+            
         </div>
-        </div>
+    
         `
         document.body.appendChild(this.element);
 
@@ -70,33 +56,14 @@ export default class InteractiveLab{
     };
 
     eventListenerMobile(){
-        const firstTone = document.querySelector('button#first');
-        const secondTone = document.querySelector('button#second');
-        const video = document.querySelector('.webgl')
-        const source = video.querySelector('source');
-
-        firstTone.addEventListener('click', ()=>{
-            if (!this.firstvideo){
-                source.src = '../assets/video/background-video.mp4';
-                video.load(); 
-                video.play();
-                this.firstvideo = true;
-            }
-        })
-
-        secondTone.addEventListener('click', ()=>{
-            if (this.firstvideo){
-                source.src = '../assets/video/home-slide-1.mp4';
-                video.load(); 
-                video.play();
-
-                this.firstvideo = false
-            }
-        })
         
     };
 
     eventListenerDesktop(){
-
+        this.element.querySelector('.canvas_wrapper').addEventListener('dblclick', ()=>{ 
+            if(window.location.pathname != "/lab.html" ){
+                window.location.href = 'lab.html'
+            }
+        })
     };
 };
