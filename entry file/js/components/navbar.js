@@ -31,6 +31,7 @@ export default class Navbar{
 
                 <li data-target="#introduction" class='list-none font-google font-bold'>INRODUCTION</li>
                 <li data-target="#lab" class='list-none font-google font-bold '>LAB</li>
+                <li data-target="#experiments" class='list-none font-google font-bold '>EXPERIMENTS</li>
                 <li data-target="#team" class='list-none font-google font-bold '>TEAM</li>
                 <li data-target="#contact" class='list-none font-google font-bold '>CONTACT</li>
             </div>
@@ -54,6 +55,12 @@ export default class Navbar{
                     data-target="#lab"
                     class="relative cursor-pointer font-google font-semibold text-foreground transition-colors duration-300 hover:text-primary after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">
                     LAB
+                </li>
+
+                <li
+                    data-target="#experiments"
+                    class="relative cursor-pointer font-google font-semibold text-foreground transition-colors duration-300 hover:text-primary after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">
+                    EXPERIMENTS
                 </li>
 
                 <li
