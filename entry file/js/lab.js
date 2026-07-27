@@ -13,17 +13,17 @@ if (window.matchMedia("(max-width: 768px)").matches){
 else if (window.matchMedia("(min-width: 768px) and (max-width: 1023px)").matches){
     console.log('tablets')
     new Navbar('mobile')
-    const interactiveLab = new InteractiveLab('desktop');
-    const { canvasWrapper, canvas } = interactiveLab.createDesktop();
-    interactiveLab.eventListenerDesktop();
+    const mylab = new InteractiveLab('desktop', 'exploration');
+    const { canvasWrapper, canvas } = mylab.createDesktop();
+    mylab.eventListenerDesktop();
     new Experience(canvasWrapper, canvas);
     new Footer('desktop')
 }
 else{
     new Navbar('desktop');
-    const interactiveLab = new InteractiveLab('desktop');
-    const { canvasWrapper, canvas } = interactiveLab.createDesktop();
-    interactiveLab.eventListenerDesktop();
+    const mylab = new InteractiveLab('desktop', 'exploration');
+    const { canvasWrapper, canvas } = mylab.createDesktop();
+    mylab.eventListenerDesktop();
     new Footer('desktop');
     new Experience(canvasWrapper, canvas);
 }
