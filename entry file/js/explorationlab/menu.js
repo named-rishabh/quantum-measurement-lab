@@ -10,7 +10,6 @@ const menuConfig = {
                 { title: "1.3 Still", target: "still", desc: "The distillation stage." },
                 { title: "1.4 100mK Plate", target: "plate_100mk", desc: "The 100mK thermal plate." },
                 { title: "1.5 Mixing Chamber", target: "mixing_chamber", desc: "The mixing chamber for base temperature." },
-                { title: "1.6 Sample Shield", target: "sample_shield", desc: "Magnetic and thermal shielding for the sample." }
             ]
         },
         {
@@ -18,12 +17,9 @@ const menuConfig = {
             target: "circuit",
             desc: "The entire room-temperature and cryogenic circuit architecture.",
             subItems: [
-                { title: "2.1 Microwave Source", target: "mw_source", desc: "Room temperature microwave source." },
-                { title: "2.2 Attenuators", target: "attenuators", desc: "Thermal noise attenuation lines." },
-                { title: "2.3 Qubit Chip", target: "qubit_chip", desc: "The primary sample chip." },
-                { title: "2.4 Resonator", target: "resonator", desc: "Readout resonator cavity." },
-                { title: "2.5 Circulator", target: "circulator", desc: "Directional signal routing." },
-                { title: "2.6 HEMT Amplifier", target: "hemt_amp", desc: "Cryogenic HEMT amplifier for readout." }
+                { title: "2.1 VNA", target: "VNA", desc: "..." },
+                { title: "2.2 Octave", target: "Octave", desc: "..." },
+                { title: "2.3 Thermometry unit", target: "Thermometry", desc: "..." },
             ]
         }
     ],

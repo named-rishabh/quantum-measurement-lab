@@ -54,7 +54,7 @@ export default class InteractiveLab {
             </div>
 
             <!-- Generate and inject the menu HTML based on current mode -->
-            ${generateMenuHTML(this.mode)}
+            ${window.location.pathname === '/lab.html' ? generateMenuHTML(this.mode) : ''}
             
         </div>
         `;
