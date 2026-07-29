@@ -14,7 +14,9 @@ if (window.matchMedia('(max-width: 768px)').matches){
     console.log('mobile')
     new Navbar('mobile')
     new Hero('mobile')
-    new InteractiveLab('mobile')
+    const interactiveLab = new InteractiveLab('mobile');
+    const { canvasWrapper, canvas } = interactiveLab.createMobile();
+    interactiveLab.eventListenerMobile();
     new Experiments("mobile")
     new Team('mobile')
     new Contact('mobile')

@@ -7,6 +7,10 @@ import Footer from "./section/Footer.js";
 
 if (window.matchMedia("(max-width: 768px)").matches){
     new Navbar('mobile')
+    const mylab = new InteractiveLab('mobile', 'exploration');
+    const { canvasWrapper, canvas } = mylab.createMobile();
+    mylab.eventListenerMoblie();
+    new Experience(canvasWrapper, canvas);
     new InteractiveLab('mobile')
     new Footer('mobile')
 }

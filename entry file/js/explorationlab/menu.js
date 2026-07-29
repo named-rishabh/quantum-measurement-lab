@@ -54,32 +54,32 @@ export function generateMenuHTML(mode) {
     currentData.forEach(group => {
         let subItemsHTML = '';
         if (group.subItems && group.subItems.length > 0) {
-            subItemsHTML = `<ul class="sub-menu pl-4 mt-1 mb-4 list-none">`;
+            subItemsHTML = `<ul class="sub-menu">`;
             group.subItems.forEach(sub => {
-                subItemsHTML += `<li class="menu-item cursor-pointer py-1 text-sm text-text/70 hover:text-blue-400 transition-colors" data-target="${sub.target}" data-desc="${sub.desc}">${sub.title}</li>`;
+                subItemsHTML += `<li class="menu-item" data-target="${sub.target}" data-desc="${sub.desc}">${sub.title}</li>`;
             });
             subItemsHTML += `</ul>`;
         }
 
         menuItemsHTML += `
-            <li class="menu-group mb-2">
-                <div class="group-title font-bold cursor-pointer py-2 border-b border-border/50 hover:text-blue-400 transition-colors" data-target="${group.target}" data-desc="${group.desc}">${group.title}</div>
+            <li class="menu-group">
+                <div class="group-title" data-target="${group.target}" data-desc="${group.desc}">${group.title}</div>
                 ${subItemsHTML}
             </li>
         `;
     });
 
     return `
-        <div class="ui-layer absolute inset-0 pointer-events-none flex justify-between p-4 z-20">
-            <nav class="left-menu pointer-events-auto bg-panel/85 border border-border rounded-lg p-5 w-[300px] max-h-full overflow-y-auto backdrop-blur-sm">
-                <ul class="main-menu text-text list-none p-0 m-0">
+        <div class="ui-layer">
+            <nav class="left-menu glass-panel">
+                <ul class="main-menu" style="list-style: none; padding: 0; margin: 0;">
                     ${menuItemsHTML}
                 </ul>
             </nav>
 
-            <aside class="right-panel pointer-events-auto bg-panel/85 border border-border rounded-lg p-5 w-[350px] h-fit backdrop-blur-sm">
-                <h2 id="desc-title" class="text-xl font-bold mb-4 border-b border-border pb-2 text-text">Component Info</h2>
-                <p id="desc-content" class="text-text/80 leading-relaxed">Select a component from the left menu to view its description.</p>
+            <aside class="right-panel glass-panel">
+                <h2 id="desc-title">Component Info</h2>
+                <p id="desc-content">Select a component from the left menu to view its description.</p>
             </aside>
         </div>
     `;

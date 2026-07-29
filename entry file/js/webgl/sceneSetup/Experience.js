@@ -13,8 +13,7 @@ import { addEnvironment } from "./Environment.js";
 import World from "./World.js";
 import Scroll from "../interactions/scroll.js";
 import ScrollTrigger from "gsap/ScrollTrigger";
-// import { gui } from "../interactions/gui.js";
-// import { setupRaycaster } from "../interactions/raycaster.js";
+
 
 
 export default class Experience {
@@ -31,18 +30,19 @@ export default class Experience {
         this.controls = new Controls(this);
         this.world = new World(this);
 
-        // setupRaycaster(this.camera.camera, this.scene, this.canvas);
-        // document.body.appendChild(gui.domElement);
-
         window.addEventListener('resize', ()=>{
             this.resize();
             requestAnimationFrame(() => {
                 ScrollTrigger.refresh();
             });
-        })
+        });
 
-        this.update();
         this.scroll = new Scroll(this);
+
+        // FIX: Defer the initial update call
+        requestAnimationFrame(() => {
+            this.update();
+        });
     }
 
     resize() {

@@ -14,6 +14,7 @@ export default class Renderer {
             antialias: true
 
         });
+        renderer.debug.checkShaderErrors = false;
         this.renderer.setSize(
             this.width, this.height
         );
