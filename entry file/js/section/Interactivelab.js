@@ -1,4 +1,4 @@
-import { generateMenuHTML } from '../explorationlab/menu.js'
+import { generateMenuHTML } from '../explorationlab/menu.js';
 
 export default class InteractiveLab {
     constructor(device, mode = 'exploration') {
@@ -18,46 +18,52 @@ export default class InteractiveLab {
     }
 
     createMobile() {
-        this.element.className = ` w-screen h-screen bg-background mt-25 text-text`;
+        this.element.className = `w-screen h-screen bg-background mt-25 text-text`;
         this.element.id = 'lab';
         this.element.innerHTML = `
         <div class='flex items-center justify-center'>
-        <span class="px-4 py-1 rounded-full border border-border text-xs uppercase tracking-[0.3em] text-text text-center mb-2 mt-2">
-        Laboratory
-        </span>
-        </div>
-        `
-        document.body.appendChild(this.element);
-
-};
-
-    createDesktop() {
-        this.element.className = 'min-h-screen w-screen mt-4 flex flex-col justify-center items-center text-text relative';
-        this.element.id = 'lab';
-        
-        this.element.innerHTML = `
-        <span class="px-4 py-1 rounded-full border border-border text-xs uppercase tracking-[0.3em] mt-4 mb-2">
-            Laboratory - ${this.mode}
-        </span>
-        <div class='canvas_wrapper relative min-h-[90vh] w-[80vw] mb-2'>
-            <canvas class='webgl max-h-[90vh] max-w-[80vw] rounded-lg border-border'></canvas>
-            
-            <div class="flex pointer-events-none absolute left-4 top-4 z-10 text-sm text-text justify-end gap-2">
-                <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm">💡 <b>Scroll</b> to zoom/overview </span>
-                <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm"> <b>Double-click</b> for detailed exploration of lab</span>
-            </div>
-
+            <span class="px-4 py-1 rounded-full border border-border text-xs uppercase tracking-[0.3em] text-text text-center mb-2 mt-2">
+            Laboratory
+            </span>
             <div class='h-[82vh] w-screen mb-2'>
-            <video class='webgl inset-0 flex ml-2 bg-panel h-[80vh] w-[96vw] items-center justify-center rounded-b-lg object-cover' autoplay muted loop playsinline>
-            <source src="../assets/video/background-video.mp4" type="video/mp4">
-            </video>
+                <video class='webgl inset-0 flex ml-2 bg-panel h-[80vh] w-[96vw] items-center justify-center rounded-b-lg object-cover' autoplay muted loop playsinline>
+                    <source src="../assets/video/background-video.mp4" type="video/mp4">
+                </video>
             </div>
-
-            <!-- Generate and inject the menu HTML based on current mode -->
-            ${window.location.pathname === '/lab.html' ? generateMenuHTML(this.mode) : ''}
-            
         </div>
         `;
+        document.body.appendChild(this.element);
+    }
+
+    createDesktop() {
+        this.element.className = 'min-h-screen w-screen top-0 left-0 text-text';
+        this.element.id = 'lab';
+        
+        // FIXED: Flexible check for lab.html URL matching
+        const isLabPage = window.location.pathname.endsWith('lab.html') || window.location.pathname.includes('/lab');
+        const isIndexPage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
+
+        this.element.innerHTML = `
+        <div class='canvas_wrapper h-full w-full flex flex-col items-center text-text relative'>
+            <span class="rounded-full border border-border text-xs uppercase tracking-[0.3em] mb-4 px-4 py-1">
+                Laboratory - ${this.mode}
+            </span>
+            <div class='relative min-h-[90vh] w-[80vw] mb-2'>
+                <canvas class='webgl max-h-[90vh] max-w-[80vw] rounded-lg border-border'></canvas>
+                
+                ${isIndexPage ? 
+                    `
+                    <div class="flex pointer-events-none absolute left-4 top-4 z-10 text-sm text-text justify-end gap-2">
+                        <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm">💡 <b>Scroll</b> to zoom/overview </span>
+                        <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm"> <b>Double-click</b> for detailed exploration of lab</span>
+                    </div>
+                    ` : ''}   
+            </div>
+            <!-- FIXED: Injects menu if on lab page -->
+            ${isLabPage ? generateMenuHTML(this.mode) : ''}
+        </div>
+        `;
+        
         document.body.appendChild(this.element);
 
         const canvasWrapper = this.element.querySelector('.canvas_wrapper');
@@ -67,42 +73,29 @@ export default class InteractiveLab {
     }
 
     eventListenerMobile() {
-        this.element.querySelector('.canvas_wrapper').addEventListener('dblclick', ()=>{
-        if(window.location.pathname != "/lab.html" ){
-            window.location.href = 'lab.html'
-        }
-    });
-}
-
+        // Mobile listener code
+    }
 
     eventListenerDesktop() {
         this.element.querySelector('.canvas_wrapper').addEventListener('dblclick', () => { 
-            if(window.location.pathname != "/lab.html") {
-                window.location.href = 'lab.html'
+            if (!window.location.pathname.endsWith('lab.html')) {
+                window.location.href = 'lab.html';
             }
         });
     }
 
     initMenuEventListeners() {
-        const descTitle = this.element.querySelector('#desc-title');
-        const descContent = this.element.querySelector('#desc-content');
-        const clickableItems = this.element.querySelectorAll('.group-title, .menu-item');
+    document.body.addEventListener('click', (e) => {
+        const item = e.target.closest('.group-title, .menu-item');
+        if (!item) return;
 
-        if (!clickableItems) return;
+        const descTitle = document.querySelector('#desc-title');
+        const descContent = document.querySelector('#desc-content');
 
-        clickableItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-
-                const targetId = item.getAttribute('data-target');
-                const description = item.getAttribute('data-desc');
-                const titleText = item.textContent.trim();
-
-                descTitle.textContent = titleText;
-                descContent.textContent = description;
-
-                console.log(`[${this.mode} mode] Zooming to: ${targetId}`);
-            });
-        });
-    }
+        if (descTitle && descContent) {
+            descTitle.textContent = item.textContent.trim();
+            descContent.textContent = item.getAttribute('data-desc') || '';
+        }
+    });
+}
 }
