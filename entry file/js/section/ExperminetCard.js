@@ -35,7 +35,7 @@ export default class Experiments {
                         <div class="h-10 w-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary font-bold">
                             01
                         </div>
-                        <h3 class="text-2xl font-semibold">Frequency Based Measurement</h3>
+                        <h3 class="text-2xl font-semibold">Frequency Domain Measurement</h3>
                     </div>
 
                     <div class="mt-6">
@@ -45,7 +45,7 @@ export default class Experiments {
                         <ul class="space-y-2">
                             <li>
                                 <a href="#double-slit" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
-                                    Single-Tone Spectroscopy &rarr;
+                                    One-Tone Spectroscopy &rarr;
                                 </a>
                             </li>
                             <li>
@@ -57,13 +57,13 @@ export default class Experiments {
                     </div>
                 </div>
 
-                <!-- Card 2: Superconducting Qubit Controls -->
+                <!-- Card 2 -->
                 <div class="bg-panel border border-border rounded-3xl p-6 shadow-sm">
                     <div class="flex items-center space-x-3 mb-6">
                         <div class="h-10 w-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary font-bold">
                             02
                         </div>
-                        <h3 class="text-2xl font-semibold">Time Based Measurement</h3>
+                        <h3 class="text-2xl font-semibold">Time Domain Measurement</h3>
                     </div>
 
                     <div class="mt-6">
@@ -110,14 +110,14 @@ export default class Experiments {
 
             <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
 
-                <!-- Card 1: Fundamental Quantum Physics -->
+                <!-- Card 1-->
                 <div class="bg-panel border border-border rounded-3xl p-8 hover:bg-panel-alt transition-all duration-300 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center space-x-4 mb-8">
                             <div class="h-12 w-12 rounded-2xl bg-primary/15 flex items-center justify-center text-xl font-bold text-primary">
                                 01
                             </div>
-                            <h3 class="text-2xl font-semibold">Frequency Based Measurement</h3>
+                            <h3 class="text-2xl font-semibold">Frequency Domain Measurement</h3>
                         </div>
                         <div class="mt-6">
                             <h4 class="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
@@ -126,7 +126,7 @@ export default class Experiments {
                             <ul class="space-y-3">
                                 <li>
                                     <a href="#double-slit" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
-                                        <span class="text-sm font-medium group-hover:text-primary transition-colors">Single-Tone Spectroscopy</span>
+                                        <span class="text-sm font-medium group-hover:text-primary transition-colors">One-Tone Spectroscopy</span>
                                         <span class="text-xs text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all">&rarr;</span>
                                     </a>
                                 </li>
@@ -143,14 +143,14 @@ export default class Experiments {
                     </div>
                 </div>
 
-                <!-- Card 2: Superconducting Qubit Controls -->
+                <!-- Card 2 -->
                 <div class="bg-panel border border-border rounded-3xl p-8 hover:bg-panel-alt transition-all duration-300 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center space-x-4 mb-8">
                             <div class="h-12 w-12 rounded-2xl bg-primary/15 flex items-center justify-center text-xl font-bold text-primary">
                                 02
                             </div>
-                            <h3 class="text-2xl font-semibold">Time Based Measurement</h3>
+                            <h3 class="text-2xl font-semibold">Time Domain Measurement</h3>
                         </div>
 
                         <div class="mt-6">
