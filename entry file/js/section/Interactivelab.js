@@ -18,7 +18,7 @@ export default class InteractiveLab {
     }
 
     createMobile() {
-        this.element.className = `w-screen h-screen bg-background mt-25 text-text`;
+        this.element.className = `w-screen h-screen bg-background text-text`;
         this.element.id = 'lab';
         this.element.innerHTML = `
         <div class='flex items-center justify-center'>
@@ -39,13 +39,12 @@ export default class InteractiveLab {
         this.element.className = 'min-h-screen w-screen top-0 left-0 text-text';
         this.element.id = 'lab';
         
-        // FIXED: Flexible check for lab.html URL matching
         const isLabPage = window.location.pathname.endsWith('lab.html') || window.location.pathname.includes('/lab');
         const isIndexPage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
 
         this.element.innerHTML = `
         <div class='canvas_wrapper h-full w-full flex flex-col items-center text-text relative'>
-            <span class="rounded-full border border-border text-xs uppercase tracking-[0.3em] mb-4 px-4 py-1">
+            <span class="rounded-full border border-border text-xs uppercase tracking-[0.3em] mb-4 px-4 py-1 -mt-10">
                 Laboratory - ${this.mode}
             </span>
             <div class='relative min-h-[90vh] w-[80vw] mb-2'>
@@ -59,7 +58,6 @@ export default class InteractiveLab {
                     </div>
                     ` : ''}   
             </div>
-            <!-- FIXED: Injects menu if on lab page -->
             ${isLabPage ? generateMenuHTML(this.mode) : ''}
         </div>
         `;

@@ -140,8 +140,13 @@ export default class Footer{
                 <h4 class="text-lg font-semibold tracking-wide">
                     Navigation
                 </h4>
-                ${window.location.pathname === '/index.html' ? `
+                ${window.location.pathname != '/' ? `
                 <ul id="footerNavigation" class="mt-5 space-y-3 text-muted-foreground">
+                    <li id="home" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
+                        QMCLab   
+                    </li>
+                </ul>`
+                : `<ul id="footerNavigation" class="mt-5 space-y-3 text-muted-foreground">
                     <li data-target="#introduction" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
                         Introduction    
                     </li>
@@ -156,12 +161,6 @@ export default class Footer{
                     </li>
                     <li data-target="#contact" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
                         Contact
-                    </li>
-                </ul>`
-                : `
-                <ul id="footerNavigation" class="mt-5 space-y-3 text-muted-foreground">
-                    <li id="home" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
-                        QMCLab   
                     </li>
                 </ul>`}
             </div> 
@@ -233,7 +232,6 @@ export default class Footer{
                 window.location.href = 'index.html'
         });
         }catch(error){}
-        
           
     };
 };
