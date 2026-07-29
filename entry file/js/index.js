@@ -1,4 +1,3 @@
-
 import "../css/style.css";
 import Experience from "./webgl/sceneSetup/Experience.js";
 import Navbar from "./components/Navbar.js";
@@ -26,12 +25,14 @@ if (window.matchMedia('(max-width: 768px)').matches){
 else if (window.matchMedia("(min-width: 768px) and (max-width: 1023px)").matches){
     console.log('tablets')
     new Navbar('mobile')
+    new Hero('mobile')
     const interactiveLab = new InteractiveLab('desktop');
     const { canvasWrapper, canvas } = interactiveLab.createDesktop();
     interactiveLab.eventListenerDesktop();
-    new Experiments("mobile")
+    new Experiments("desktop")
     new Experience(canvasWrapper, canvas);
-    
+    new Team('mobile')
+    new Contact('mobile')
     new Footer('desktop')
 }
 else{

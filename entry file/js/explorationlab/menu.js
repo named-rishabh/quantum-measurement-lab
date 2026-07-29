@@ -13,7 +13,7 @@ const menuConfig = {
             ]
         },
         {
-            title: "2. Spectroscopy Circuit",
+            title: "2. Control Unit",
             target: "circuit",
             desc: "The entire room-temperature and cryogenic circuit architecture.",
             subItems: [
@@ -54,32 +54,37 @@ export function generateMenuHTML(mode) {
     currentData.forEach(group => {
         let subItemsHTML = '';
         if (group.subItems && group.subItems.length > 0) {
-            subItemsHTML = `<ul class="sub-menu">`;
+            subItemsHTML = `<ul class="sub-menu list-none pl-4 mt-1 mb-4 border-l-2 border-white/10 ml-2">`;
             group.subItems.forEach(sub => {
-                subItemsHTML += `<li class="menu-item" data-target="${sub.target}" data-desc="${sub.desc}">${sub.title}</li>`;
+                subItemsHTML += `
+                    <li class="menu-item cursor-pointer p-2 text-[0.9rem] opacity-70 rounded transition-all duration-200 ease-in-out hover:bg-white/5 hover:opacity-100 hover:pl-3 hover:text-primary" data-target="${sub.target}" data-desc="${sub.desc}">
+                        <span class="pointer-events-none">${sub.title}</span>
+                    </li>`;
             });
             subItemsHTML += `</ul>`;
         }
 
         menuItemsHTML += `
-            <li class="menu-group">
-                <div class="group-title" data-target="${group.target}" data-desc="${group.desc}">${group.title}</div>
+            <li class="menu-group mb-2">
+                <div class="group-title font-bold cursor-pointer py-[0.7rem] px-[0.4rem] mb-1 border-b border-white/10 rounded transition-all duration-250 ease-in-out hover:bg-white/8 hover:text-primary hover:pl-[0.85rem]" data-target="${group.target}" data-desc="${group.desc}">
+                    <span class="pointer-events-none">${group.title}</span>
+                </div>
                 ${subItemsHTML}
             </li>
         `;
     });
 
     return `
-        <div class="ui-layer">
-            <nav class="left-menu glass-panel">
-                <ul class="main-menu" style="list-style: none; padding: 0; margin: 0;">
+        <div class="absolute inset-0 pointer-events-none flex justify-between p-4 z-50 max-h-[92.5vh]">
+            <nav class="left-menu custom-scrollbar pointer-events-auto bg-panel/85 border border-border rounded-lg p-5 w-[20vw] max-h-full overflow-y-auto backdrop-blur-sm">
+                <ul class="main-menu text-text list-none p-0 m-0">
                     ${menuItemsHTML}
                 </ul>
             </nav>
 
-            <aside class="right-panel glass-panel">
-                <h2 id="desc-title">Component Info</h2>
-                <p id="desc-content">Select a component from the left menu to view its description.</p>
+            <aside class="right-panel custom-scrollbar pointer-events-auto bg-panel/85 border border-border rounded-lg p-5 w-[25vw] h-fit backdrop-blur-sm">
+                <h2 id="desc-title" class="text-xl font-bold mb-4 border-b border-border pb-2 text-text">Component Info</h2>
+                <p id="desc-content" class="text-text/80 leading-relaxed">Select a component from the left menu to view its description.</p>
             </aside>
         </div>
     `;

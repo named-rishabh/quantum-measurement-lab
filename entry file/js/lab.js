@@ -16,7 +16,6 @@ if (window.matchMedia("(max-width: 768px)").matches){
 }
 else if (window.matchMedia("(min-width: 768px) and (max-width: 1023px)").matches){
     console.log('tablets')
-    new Navbar('mobile')
     const mylab = new InteractiveLab('desktop', 'exploration');
     const { canvasWrapper, canvas } = mylab.createDesktop();
     mylab.eventListenerDesktop();
@@ -24,7 +23,6 @@ else if (window.matchMedia("(min-width: 768px) and (max-width: 1023px)").matches
     new Footer('desktop')
 }
 else{
-    new Navbar('desktop');
     const mylab = new InteractiveLab('desktop', 'exploration');
     const { canvasWrapper, canvas } = mylab.createDesktop();
     mylab.eventListenerDesktop();
