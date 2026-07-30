@@ -57,8 +57,9 @@ export default class InteractiveLab {
                         <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm"> <b>Double-click</b> for detailed exploration of lab</span>
                     </div>
                     ` : ''}   
-            </div>
+            </div> 
             ${isLabPage ? generateMenuHTML(this.mode) : ''}
+        </div>
         `;
         
         document.body.appendChild(this.element);
