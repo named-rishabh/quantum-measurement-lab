@@ -59,21 +59,6 @@ export default class InteractiveLab {
                     ` : ''}   
             </div>
             ${isLabPage ? generateMenuHTML(this.mode) : ''}
-        <span class="px-4 py-1 rounded-full border border-border text-xs uppercase tracking-[0.3em] mt-4 mb-2">
-            Laboratory - ${this.mode}
-        </span>
-        <div class='canvas_wrapper relative min-h-[90vh] w-[80vw] mb-2'>
-            <canvas class='webgl max-h-[90vh] max-w-[80vw] rounded-lg border-border'></canvas>
-            
-            <div class="flex pointer-events-none absolute left-4 top-4 z-10 text-sm text-text justify-end gap-2">
-                <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm">💡 <b>Scroll</b> to zoom/overview </span>
-                <span class="rounded-md bg-black/60 px-3 py-1.5 backdrop-blur-sm"> <b>Double-click</b> for detailed exploration of lab</span>
-            </div>
-
-            <!-- Generate and inject the menu HTML based on current mode -->
-            ${window.location.pathname === '/lab.html' ? generateMenuHTML(this.mode) : ''}
-            
-        </div>
         `;
         
         document.body.appendChild(this.element);
