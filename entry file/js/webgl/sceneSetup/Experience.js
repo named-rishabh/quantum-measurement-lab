@@ -5,8 +5,8 @@
 // Resize handling. Handles in Experience.js
 
 import { createScene } from "./Scene.js";
-import Camera from "./Camera.js";
-import Renderer from "./Renderer.js";
+import Camera from "./camera.js";
+import Renderer from "./renderer.js";
 import Lights from "./Lights.js";
 import Controls from "../interactions/controls.js";
 import { addEnvironment } from "./Environment.js";
