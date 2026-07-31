@@ -1,6 +1,6 @@
 import "../css/style.css";
 import Experience from "./webgl/sceneSetup/Experience.js";
-import Navbar from "./components/Navbar.js";
+import Navbar from "./components/navbar.js";
 import Hero from "./section/Hero.js";
 import InteractiveLab from "./section/Interactivelab.js";
 import Experiments from "./section/ExperminetCard.js";
@@ -13,9 +13,7 @@ if (window.matchMedia('(max-width: 768px)').matches){
     console.log('mobile')
     new Navbar('mobile')
     new Hero('mobile')
-    const interactiveLab = new InteractiveLab('mobile');
-    const { canvasWrapper, canvas } = interactiveLab.createMobile();
-    interactiveLab.eventListenerMobile();
+    new InteractiveLab('mobile');
     new Experiments("mobile")
     new Team('mobile')
     new Contact('mobile')

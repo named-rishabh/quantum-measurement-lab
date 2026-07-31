@@ -9,7 +9,7 @@ import Camera from "./camera.js";
 import Renderer from "./renderer.js";
 import Lights from "./Lights.js";
 import Controls from "../interactions/controls.js";
-import { addEnvironment } from "./Environment.js";
+import { addEnvironment } from "./environment.js";
 import World from "./World.js";
 import Scroll from "../interactions/scroll.js";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -53,8 +53,11 @@ export default class Experience {
     }
 
     update() {
+        const target = this.controls.controls.target;
+        this.controls.controls.update();
+        this.controls.controls2.target.set(target.x, target.y, target.z);
+        this.controls.controls2.update();
         this.renderer.update();
-        this.controls.update();
         requestAnimationFrame(() => this.update());
     }
 }

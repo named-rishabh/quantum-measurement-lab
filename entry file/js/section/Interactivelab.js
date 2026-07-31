@@ -21,7 +21,7 @@ export default class InteractiveLab {
         this.element.className = `w-screen h-screen bg-background text-text`;
         this.element.id = 'lab';
         this.element.innerHTML = `
-        <div class='flex items-center justify-center'>
+        <div class='flex flex-col items-center justify-center'>
             <span class="px-4 py-1 rounded-full border border-border text-xs uppercase tracking-[0.3em] text-text text-center mb-2 mt-2">
             Laboratory
             </span>
