@@ -7,8 +7,8 @@ export default class Lights {
 
         this.scene = experience.scene;
         
-        const ambient = new THREE.AmbientLight(0xffffff, 1);
-        const directional = new THREE.DirectionalLight(0xffffff, 3);
+        const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+        const directional = new THREE.DirectionalLight(0xffffff, 2);
         directional.position.set(5,5,5);
         const point = new THREE.PointLight(0xffffff, 5);
         point.position.set(0,0,4);
