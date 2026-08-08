@@ -627,7 +627,7 @@ export default class DilutionRefrigerator {
         
         for (let i = -1.2; i < 1.2; i += 0.3) {
                 for (let j = -1.0; j < 1.2; j += 0.3) {
-                    const connector = new THREE.Mesh(conGeometry, conMaterial);
+                    const connector = new THREE.Mesh(conGeometry, SHARED_MATERIALS.goldConnector);
                     // Position them at the cable's exact x,y + curve offset
                     connector.position.set(j + curveOffsetX, i + curveOffsetY, 0.14);
                     connector.rotation.x = Math.PI / 2;
@@ -668,7 +668,7 @@ export default class DilutionRefrigerator {
          // Assuming you want to offset each cable along the y-axis
          for(let i = -1.18; i < 1.2; i+=0.3) {
             for(let j = -1.08; j < 1.2; j+=0.3) {
-            const cable = new THREE.Mesh(tubeGeometry, tubeMaterial);
+            const cable = new THREE.Mesh(tubeGeometry, SHARED_MATERIALS.helixWire);
             cable.position.y = i;
             cable.position.x = j;
             // Adjust the y-position for each cable
@@ -682,7 +682,7 @@ export default class DilutionRefrigerator {
          //----------------
          const rffilterGrp = new THREE.Group();
          const rffiltergeom = new THREE.BoxGeometry(0.22, 0.2, 2.5, 32);
-          const rffilter = new THREE.Mesh(rffiltergeom,attenutormaterial);
+          const rffilter = new THREE.Mesh(rffiltergeom,SHARED_MATERIALS.goldFlange);
           rffilter.position.set(1.2,0,0.34);
           rffilter.rotation.x = Math.PI/2;
           rffilterGrp.add(rffilter);
