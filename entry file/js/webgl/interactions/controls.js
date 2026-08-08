@@ -28,7 +28,7 @@ export default class Controls {
         this.controls2.noZoom = false;
         this.controls2.zoomSpeed = 7.5;
         this.controls2.maxDistance = 65;
-        this.controls2.minDistance = 10;
+        this.controls2.minDistance = 3;
         
     }
 

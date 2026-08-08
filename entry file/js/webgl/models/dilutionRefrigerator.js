@@ -34,8 +34,8 @@ const SHARED_GEOS = {
 export default class DilutionRefrigerator {
     constructor() {
         this.group = new THREE.Group();
-        this.group.position.set(-5.15,-3,0.15);
-        this.group.scale.set(1.2,1.2,1.2);
+        this.group.position.set(-5.15,-2,0.15);
+        this.group.scale.set(1.2,1.1,1.2);
         this.buildDilutionRefrigerator();
     }
 

@@ -1,7 +1,7 @@
 const menuConfig = {
     exploration: [
         {
-            title: "1. Cryogenic System",
+            title: "1. Dilution Refrigerator",
             target: "cryostat",
             desc: "The primary cryogenic enclosure and thermal shielding for the setup.",
             subItems: [
@@ -14,34 +14,33 @@ const menuConfig = {
         },
         {
             title: "2. Control Unit",
-            target: "circuit",
+            target: "ControlRack",
             desc: "The entire room-temperature and cryogenic circuit architecture.",
             subItems: [
                 { title: "2.1 VNA", target: "VNA", desc: "..." },
                 { title: "2.2 Octave", target: "Octave", desc: "..." },
                 { title: "2.3 Thermometry unit", target: "Thermometry", desc: "..." },
             ]
-        }
-    ],
-    experiment: [
+        },
         {
-            title: "1. Stimulus Control",
-            target: "microwave_pulse",
-            desc: "Control system for initiating and formatting microwave pulse flows.",
+            title: "3. GHS",
+            target: "GHS",
+            desc: "The entire room-temperature and cryogenic circuit architecture.",
             subItems: [
-                { title: "1.1 Pulse Duration", target: "pulse_time", desc: "Adjust the temporal length of the pulse." },
-                { title: "1.2 Amplitude", target: "pulse_amp", desc: "Set the peak amplitude of the signal." }
+                { title: "3.1 GHU", target: "GHU", desc: "..." },
+                { title: "3.2 Dewar", target: "Dewar", desc: "..." },
             ]
         },
         {
-            title: "2. Readout & Analysis",
-            target: "rabi_oscillation",
-            desc: "Measurement output visualization for Rabi oscillations.",
-            subItems: [
-                { title: "2.1 Population State", target: "state_pop", desc: "Ground vs Excited state probabilities." },
-                { title: "2.2 Coherence Time", target: "coherence", desc: "T1 and T2 relaxation metrics." }
-            ]
-        }
+            title: "4. Compressor",
+            target: "Compressor",
+            desc: "The entire room-temperature and cryogenic circuit architecture.",
+        },
+                {
+            title: "5. Classical computer",
+            target: "Computer",
+            desc: "The entire room-temperature and cryogenic circuit architecture.",
+        },
     ]
 };
 
@@ -88,4 +87,32 @@ export function generateMenuHTML(mode) {
             </aside>
         </div>
     `;
+}
+
+export function setupMenuEventListeners(cameraControllerCallback) {
+    document.addEventListener('click', (event) => {
+        // Find if the clicked element (or its parent) is a menu item or group title
+        const clickedItem = event.target.closest('.menu-item, .group-title');
+        
+        if (!clickedItem) return; // Exit if clicked outside our targets
+
+        // Extract data attributes
+        const targetComponent = clickedItem.getAttribute('data-target');
+        const description = clickedItem.getAttribute('data-desc');
+        const titleText = clickedItem.querySelector('span').innerText;
+
+        // 1. Update the Right Panel UI
+        const descTitleEl = document.getElementById('desc-title');
+        const descContentEl = document.getElementById('desc-content');
+        
+        if (descTitleEl && descContentEl) {
+            descTitleEl.innerText = titleText;
+            descContentEl.innerText = description;
+        }
+
+        // 2. Trigger the Camera Zoom
+        if (targetComponent && typeof cameraControllerCallback === 'function') {
+            cameraControllerCallback(targetComponent);
+        }
+    });
 }

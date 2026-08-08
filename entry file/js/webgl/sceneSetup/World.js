@@ -7,6 +7,7 @@ import ControlRack from "../models/controlRack/CRindex.js";
 import Platform from "../models/Platform.js";
 import classicalComputer from "../models/classicalComp.js";
 import Glasswall from "../models/glasswall.js";
+import CryoCase from "../models/cryocase.js";
 
 
 export default class World {
@@ -47,5 +48,8 @@ export default class World {
 
         const glasswall= new Glasswall();
         this.scene.add(glasswall.getGroup());
+
+        this.cryoCase = new CryoCase();
+        this.scene.add(this.cryoCase.getGroup());
     }
 }
