@@ -663,7 +663,7 @@ export default class DilutionRefrigerator {
             points.push(new THREE.Vector3(x, y, z));
         }
         const curve = new THREE.CatmullRomCurve3(points); // Curve for the wire path
-        const tubeGeometry = new THREE.TubeGeometry(curve, 100, 0.025, 8, false);
+        const tubeGeometry = new THREE.TubeGeometry(curve, 100, 0.035, 12, false);
         
          // Assuming you want to offset each cable along the y-axis
          for(let i = -1.18; i < 1.2; i+=1) {
