@@ -9,7 +9,7 @@ export default class Camera {
         this.height = this.experience.wrapper.getBoundingClientRect().height;
         this.scene = experience.scene;
         this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 0.1, 100 );
-        this.camera.position.set(-2.5, 7.5, 15);
+        this.camera.position.set(0, 15, 50); // changed the camera position from (2.5, 7.5, 15) to (0, 15, 50)
         this.scene.add(this.camera);
     }
 

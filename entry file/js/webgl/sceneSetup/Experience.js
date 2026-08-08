@@ -5,16 +5,15 @@
 // Resize handling. Handles in Experience.js
 
 import { createScene } from "./Scene.js";
-import Camera from "./Camera.js";
-import Renderer from "./Renderer.js";
+import Camera from "./camera.js";
+import Renderer from "./renderer.js";
 import Lights from "./Lights.js";
 import Controls from "../interactions/controls.js";
-import { addEnvironment } from "./Environment.js";
+import { addEnvironment } from "./environment.js";
 import World from "./World.js";
 import Scroll from "../interactions/scroll.js";
 import ScrollTrigger from "gsap/ScrollTrigger";
-// import { gui } from "../interactions/gui.js";
-// import { setupRaycaster } from "../interactions/raycaster.js";
+
 
 
 export default class Experience {
@@ -31,18 +30,19 @@ export default class Experience {
         this.controls = new Controls(this);
         this.world = new World(this);
 
-        // setupRaycaster(this.camera.camera, this.scene, this.canvas);
-        // document.body.appendChild(gui.domElement);
-
         window.addEventListener('resize', ()=>{
             this.resize();
             requestAnimationFrame(() => {
                 ScrollTrigger.refresh();
             });
-        })
+        });
 
-        this.update();
         this.scroll = new Scroll(this);
+
+        // FIX: Defer the initial update call
+        requestAnimationFrame(() => {
+            this.update();
+        });
     }
 
     resize() {
@@ -53,8 +53,11 @@ export default class Experience {
     }
 
     update() {
+        const target = this.controls.controls.target;
+        this.controls.controls.update();
+        this.controls.controls2.target.set(target.x, target.y, target.z);
+        this.controls.controls2.update();
         this.renderer.update();
-        this.controls.update();
         requestAnimationFrame(() => this.update());
     }
 }

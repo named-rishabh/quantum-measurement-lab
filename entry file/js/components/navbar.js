@@ -29,10 +29,11 @@ export default class Navbar{
 
             <div id='drop_down_menu' class='flex transition-all duration-300 ease-in-out -translate-y-5 opacity-0 pointer-events-none w-screen bg-panel-alt flex-col justify-center items-center pb-2 rounded-b-lg '>
 
-                <li data-target="#introduction" class='list-none font-google font-bold'>INRODUCTION</li>
-                <li data-target="#lab" class='list-none font-google font-bold '>LAB</li>
-                <li data-target="#team" class='list-none font-google font-bold '>TEAM</li>
-                <li data-target="#contact" class='list-none font-google font-bold '>CONTACT</li>
+                <li data-target="#introduction" class='list-none font-google font-bold cursor-pointer'>INRODUCTION</li>
+                <li data-target="#lab" class='list-none font-google font-bold cursor-pointer'>LAB</li>
+                <li data-target="#experiments" class='list-none font-google font-bold cursor-pointer'>EXPERIMENTS</li>
+                <li data-target="#team" class='list-none font-google font-bold cursor-pointer'>TEAM</li>
+                <li data-target="#contact" class='list-none font-google font-bold cursor-pointer'>CONTACT</li>
             </div>
         `
         document.body.appendChild(this.element)
@@ -54,6 +55,12 @@ export default class Navbar{
                     data-target="#lab"
                     class="relative cursor-pointer font-google font-semibold text-foreground transition-colors duration-300 hover:text-primary after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">
                     LAB
+                </li>
+
+                <li
+                    data-target="#experiments"
+                    class="relative cursor-pointer font-google font-semibold text-foreground transition-colors duration-300 hover:text-primary after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full">
+                    EXPERIMENTS
                 </li>
 
                 <li

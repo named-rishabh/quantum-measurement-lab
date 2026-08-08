@@ -1,5 +1,35 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js'; // ADD THIS
+
+const SHARED_MATERIALS = {
+    goldFlange: new THREE.MeshStandardMaterial({color: 0xd4af37, side: THREE.DoubleSide, roughness: 0.15, metalness: 1}),
+    goldTube: new THREE.MeshStandardMaterial({ color: 0xd4af37, side: THREE.DoubleSide, roughness: 0.1, metalness: 1}),
+    goldConnector: new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 1, roughness: 0.15 }),
+    lightGreyRough: new THREE.MeshStandardMaterial({color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.2, metalness: 1}),
+    lightGreyMedium: new THREE.MeshStandardMaterial({color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.15, metalness: 1}),
+    lightGreySmooth: new THREE.MeshStandardMaterial({ color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.05, metalness: 1 }),
+    darkGrey: new THREE.MeshStandardMaterial({color: 0x353E43, side: THREE.DoubleSide, roughness: 0.15, metalness: 1}),
+    mediumGrey: new THREE.MeshStandardMaterial({color: 0x595959, side: THREE.DoubleSide, roughness: 0.15, metalness: 1}),
+    silver: new THREE.MeshStandardMaterial({ color: 0xC0C0C0, side: THREE.DoubleSide, roughness: 0.15, metalness: 1 }),
+    silverTube: new THREE.MeshStandardMaterial({ color: 0xC0C0C0, side: THREE.DoubleSide, roughness: 0.1, metalness: 1}),
+    copperStill: new THREE.MeshStandardMaterial({color: 0xD37B37, side: THREE.DoubleSide, roughness: 0.05, metalness: 1}),
+    copperRough: new THREE.MeshStandardMaterial({color: 0xB87333, metalness: 1, roughness: 0.3}),
+    silverPhysical: new THREE.MeshPhysicalMaterial({ color: 0xd6d6d6, metalness: 1, roughness: 0.15 }),
+    housingPhysical: new THREE.MeshPhysicalMaterial({ color: 0x636A6E, metalness: 1, roughness: 0.15 }),
+    copperPhysical: new THREE.MeshPhysicalMaterial({ color: 0xb87333, metalness: 1, roughness: 0.15 }),
+    boltSteel: new THREE.MeshStandardMaterial({ color: 0x889498, metalness: 0.9, roughness: 0.25 }),
+    helixWire: new THREE.MeshStandardMaterial({ color: 0x71797E, metalness: 1, roughness: 0.15 }),
+    ringPurple: new THREE.MeshStandardMaterial({ color: 0x9370DB, metalness: 1, roughness: 0.15 }),
+    ringGrey: new THREE.MeshStandardMaterial({ color: 0x636A6E, metalness: 1, roughness: 0.15 }),
+    vacuumCylinder: new THREE.MeshStandardMaterial({ color: 0x595959, metalness: 0.7, roughness: 0.45 })
+};
+
+const SHARED_GEOS = {
+    boltHead: new THREE.CylinderGeometry(0.3, 0.3, 0.2, 6),
+    boltWasher: new THREE.CylinderGeometry(0.35, 0.35, 0.05, 10),
+    boltShaft: new THREE.CylinderGeometry(0.15, 0.15, 1, 16)
+};
 
 export default class DilutionRefrigerator {
     constructor() {
@@ -46,9 +76,7 @@ export default class DilutionRefrigerator {
            
             // Creating the base geometry
             let geometry = new THREE.ExtrudeGeometry(df_flange_plate, extrudesettings);
-        
-            const material = new THREE.MeshStandardMaterial({color: 0xd4af37, side: THREE.DoubleSide, roughness: 0.15, metalness: 1});
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.goldFlange);
         
             this.group.add(mesh);
             mesh.rotateX(Math.PI / 2);
@@ -82,8 +110,7 @@ export default class DilutionRefrigerator {
                 };
                
             const geometry = new THREE.ExtrudeGeometry(shape, extrudesettings);
-            const material = new THREE.MeshStandardMaterial({color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.2, metalness: 1});
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.lightGreyRough);
             mesh.rotateX(- Math.PI / 2);
             this.group.add(mesh);
             mesh.position.y = y;
@@ -103,8 +130,6 @@ export default class DilutionRefrigerator {
         df_pipe.call(this, 0.23, 0.1, -1.04, 0, 0.77);
         df_pipe.call(this, 0.23, 0.1, 0.95, 0, 0.75);
         
-        
-        
         //top flange
         function top_flange(r) {
             const df_flange_plate = new THREE.Shape();
@@ -118,8 +143,7 @@ export default class DilutionRefrigerator {
            
             //creating the mesh
             const geometry = new THREE.ExtrudeGeometry(df_flange_plate, extrudesettings);
-            const material = new THREE.MeshStandardMaterial({color: 0x353E43, side: THREE.DoubleSide, roughness: 0.15, metalness: 1});
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.darkGrey);
         
             this.group.add(mesh);
             mesh.position.y = 11.9;
@@ -129,9 +153,7 @@ export default class DilutionRefrigerator {
         
         top_flange.call(this, 3.5);
         
-        
         //top flange details
-        const tf_material =  new THREE.MeshStandardMaterial({color: 0x595959, side: THREE.DoubleSide, roughness: 0.15, metalness: 1});
         function tf_cylinder(r,d, x, y, z, angle, bevel = false) {
             const shape = new THREE.Shape();
             shape.absarc( 0, 0, r, 0, angle, true );
@@ -144,7 +166,7 @@ export default class DilutionRefrigerator {
                 };
                
             const geometry = new THREE.ExtrudeGeometry(shape, extrudesettings);
-            const mesh = new THREE.Mesh(geometry, tf_material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.mediumGrey);
             mesh.position.set(x, y, z);
             mesh.rotation.x = - Math.PI / 2;
             this.group.add(mesh);
@@ -173,41 +195,37 @@ export default class DilutionRefrigerator {
         tf_cylinder.call(this, 0.08,0.2,2.7,11.9,0.1, Math.PI * 2);
         tf_cylinder.call(this, 0.08,0.2,2.7,11.9,-0.3, Math.PI * 2);
         
-        
-        
         const topflangGrp = new THREE.Group();
         const topvaccumGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.2, 32);
-        const topvaccumMat = new THREE.MeshStandardMaterial({ color: 0x595959 , metalness: 1, roughness: 0.15 });
-        const topvaccum = new THREE.Mesh(topvaccumGeo, topvaccumMat);
+        const topvaccum = new THREE.Mesh(topvaccumGeo, SHARED_MATERIALS.mediumGrey);
         topvaccum.position.set(0.6, 7.9, 0.7);
         //topflangGrp.add(topvaccum);
         
         const topvaccum2 = new THREE.CircleGeometry(0.25,32);
-        const topvaccum2Mat = new THREE.MeshStandardMaterial({ color: 0x595959 , metalness: 1, roughness: 0.15 });
-        const topvaccum2Mesh = new THREE.Mesh(topvaccum2, topvaccum2Mat);
+        const topvaccum2Mesh = new THREE.Mesh(topvaccum2, SHARED_MATERIALS.mediumGrey);
         topvaccum2Mesh.position.set(0.6, 8, 0.7);
         topvaccum2Mesh.rotation.x = -Math.PI / 2;
         //topflangGrp.add(topvaccum2Mesh);
         
         const vaccumcylinderGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.3, 32);
-        const vaccumcylinderMat = new THREE.MeshStandardMaterial({ color: 0x595959, metalness: 0.7, roughness: 0.45 });
-        const vaccumcylinder = new THREE.Mesh(vaccumcylinderGeo, vaccumcylinderMat);
+        const vaccumcylinder = new THREE.Mesh(vaccumcylinderGeo, SHARED_MATERIALS.vacuumCylinder);
         vaccumcylinder.position.set(0.9, 8.05, 0.7);
         topflangGrp.add(vaccumcylinder);
+        
         const vaccumcylindertopassemble = new THREE.Group();
         const vaccumcylindertop = topvaccum.clone();
         vaccumcylindertop.position.set(1, 8.2, 0.7);
         vaccumcylindertopassemble.add(vaccumcylindertop);
         vaccumcylindertop.scale.set(0.4,0.2,0.4);
-         const vaccumcylindertopring = new THREE.RingGeometry(0.09,0.13,32);
-        const vaccumcylindertopringMat = new THREE.MeshStandardMaterial({ color: 0x9370DB, metalness: 1, roughness: 0.15 });
-        const vaccumcylindertopringMesh = new THREE.Mesh(vaccumcylindertopring, vaccumcylindertopringMat);
+        
+        const vaccumcylindertopring = new THREE.RingGeometry(0.09,0.13,32);
+        const vaccumcylindertopringMesh = new THREE.Mesh(vaccumcylindertopring, SHARED_MATERIALS.ringPurple);
         vaccumcylindertopringMesh.position.set(1, 8.2, 0.7);
         vaccumcylindertopringMesh.rotation.x = -Math.PI / 2;
         vaccumcylindertopassemble.add(vaccumcylindertopringMesh);
+        
         const vaccumcylindertopring2 = new THREE.RingGeometry(0.085,0.09,32);
-        const vaccumcylindertopring2Mat = new THREE.MeshStandardMaterial({ color: 0x636A6E, metalness: 1, roughness: 0.15 });
-        const vaccumcylindertopring2Mesh = new THREE.Mesh(vaccumcylindertopring2, vaccumcylindertopring2Mat);
+        const vaccumcylindertopring2Mesh = new THREE.Mesh(vaccumcylindertopring2, SHARED_MATERIALS.ringGrey);
         vaccumcylindertopring2Mesh.position.set(1, 8.23, 0.7);
         vaccumcylindertopring2Mesh.rotation.x = -Math.PI / 2;
         vaccumcylindertopassemble.add(vaccumcylindertopring2Mesh);
@@ -226,12 +244,10 @@ export default class DilutionRefrigerator {
         vaccumcylindertopassemble2.position.set(-0.1,0,-1)
         topflangGrp.add(vaccumcylindertopassemble2);
         
-        
         //add side bolts
         const sideboltGRp = new THREE.Group();
         const sideboltGeo = new THREE.BoxGeometry(0.08,0.13,0.09);
-        const sideboltMat = new THREE.MeshStandardMaterial({ color: 0x595959, metalness: 1, roughness: 0.15 });
-        const sidebolt1 = new THREE.Mesh(sideboltGeo, sideboltMat);
+        const sidebolt1 = new THREE.Mesh(sideboltGeo, SHARED_MATERIALS.mediumGrey);
         sidebolt1.position.set(0.7, 8., 0.84);
         sidebolt1.rotation.x = Math.PI / 2;
         sidebolt1.rotation.z = -Math.PI / 6;
@@ -244,8 +260,6 @@ export default class DilutionRefrigerator {
         sidebolts2.position.set(0.63, 8., 0.42);
         sidebolts2.rotation.z = Math.PI / 12;
         sideboltGRp.add(sidebolts2);
-        
-        
         
         function Hexnut(radius ,thickness){
              const hexnutshape = new THREE.Shape();
@@ -261,18 +275,11 @@ export default class DilutionRefrigerator {
                  depth:thickness,
                  bevelEnabled:false
              });
-             const hexnutmaterial = new THREE.MeshStandardMaterial({
-             color:0xD4AF37,
-             metalness:1,
-             roughness:0.15,
-             clearcoat :0.4,
-             clearcoatRoughness :0
-             });
-             return new THREE.Mesh(hexnutGeom,hexnutmaterial);
-         
+             return new THREE.Mesh(hexnutGeom, SHARED_MATERIALS.goldFlange);
          }
+         
         const sidebolttop = Hexnut(0.76, 1.5);
-        sidebolttop.material = new THREE.MeshStandardMaterial({ color: 0x595959, metalness: 1, roughness: 0.15 });
+        sidebolttop.material = SHARED_MATERIALS.mediumGrey;
         sidebolttop.position.set(0.7, 8.09, 0.84);
         sidebolttop.scale.set(0.04,0.04,0.04);
         sidebolttop.rotation.x = Math.PI / 2;
@@ -295,16 +302,12 @@ export default class DilutionRefrigerator {
         
         topflangGrp.add(sideboltGRp2);
         
-        
         //topvaccum around large still pump
         function create_topassemble(x,y,z,sx,sy,sz){
           const vaccumtopassembly = vaccumcylindertopassemble.clone();
           vaccumtopassembly.position.set(x,y,z);
           vaccumtopassembly.scale.set(sx,sy,sz);
           topflangGrp.add(vaccumtopassembly);
-          
-         
-          
           return vaccumtopassembly;
         };
         create_topassemble(-0.4, 0.15, -0.48,1,1,1);
@@ -323,9 +326,6 @@ export default class DilutionRefrigerator {
          extraconngrp.position.set(1.063,2.42,-0.248);
          extraconngrp.scale.set(0.7,0.7,0.7)
         
-        
-        
-        
         topflangGrp.scale.set(3,2.5,3);
         topflangGrp.position.set(-1.8, -8, -0.45);
         this.group.add(topflangGrp);
@@ -343,8 +343,7 @@ export default class DilutionRefrigerator {
         
             // Wrap a tube around that path (path, tube segments, radius, radial segments, closed loop)
             const geometry = new THREE.TubeGeometry(path, 64, 0.04, 8 , false);
-            const material = new THREE.MeshStandardMaterial({ color: 0xd4af37,  side: THREE.DoubleSide, roughness: 0.1, metalness: 1});
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.goldTube);
             duGroup.add(mesh);
             mesh.position.y = 2.5;
         };
@@ -354,8 +353,7 @@ export default class DilutionRefrigerator {
         const SHE = []
         function step_heatexchanger(y) {
             const geometry = new THREE.TorusGeometry( 0.5, 0.15, 3, 50 );
-            const material = new THREE.MeshStandardMaterial( { color: 0xC0C0C0,  side: THREE.DoubleSide, roughness: 0.15, metalness: 1 } );
-            const torus = new THREE.Mesh( geometry, material );
+            const torus = new THREE.Mesh( geometry, SHARED_MATERIALS.silver );
             duGroup.add( torus );
             torus.rotateX(Math.PI / 2);
             torus.position.y = y - 0.1;
@@ -367,7 +365,7 @@ export default class DilutionRefrigerator {
         step_heatexchanger(1.6);
         step_heatexchanger(1.9);
         
-        function du_cylinder(r,d, col, y) {
+        function du_cylinder(r,d, mat, y) {
             const shape = new THREE.Shape();
             shape.absarc( 0, 0, r, 0, Math.PI * 2, false );
             const extrudesettings = {
@@ -377,29 +375,27 @@ export default class DilutionRefrigerator {
                 };
                
             const geometry = new THREE.ExtrudeGeometry(shape, extrudesettings);
-            const material = new THREE.MeshStandardMaterial({color: col, side: THREE.DoubleSide, roughness: 0.05, metalness: 1});
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, mat);
             duGroup.add(mesh);
             mesh.rotateX(- Math.PI / 2);
             mesh.position.y = y;
             return mesh;
         };
         
-        const still_1 = du_cylinder(0.55, 0.2, 0xD37B37, 3.5);
-        const still_2 = du_cylinder(0.5, 0.4, 0xD37B37, 3.5);
-        const mixer = du_cylinder(0.48, 0.5,  0xE7E7E7, 0.1);
-        const plate1 = du_cylinder(0.75, 0.05,  0xd4af37, 0);
-        const plate2 = du_cylinder(0.65, 0.08,  0xc0c6c7, 0.05);
-        const plate3 = du_cylinder(0.75, 0.25,  0xd4af37, 2.05);
-        const plate4 = du_cylinder(0.75, 0.08,  0xD37B37, 3.9);
-        const plate5 = du_cylinder(0.35, 0.08,  0xD37B37, 3.98);
-        const plate6= du_cylinder(0.25, 2.6,  0xE7E7E7, 4.0);
-        const plate7 = du_cylinder(0.45, 0.09,  0xD37B37, 4.35);
-        const plate8 = du_cylinder(0.45, 0.08,   0xE7E7E7, 4.28);
-        const plate9 = du_cylinder(0.75, 0.08,   0xE7E7E7, 0.55);
-        const plate10 = du_cylinder(0.7, 0.2,   0xD37B37, 5);
-        const plate11= du_cylinder(0.7, 0.2,   0xE7E7E7, 4.8);
-        
+        const still_1 = du_cylinder(0.55, 0.2, SHARED_MATERIALS.copperStill, 3.5);
+        const still_2 = du_cylinder(0.5, 0.4, SHARED_MATERIALS.copperStill, 3.5);
+        const mixer = du_cylinder(0.48, 0.5, SHARED_MATERIALS.lightGreySmooth, 0.1);
+        const plate1 = du_cylinder(0.75, 0.05, SHARED_MATERIALS.goldFlange, 0);
+        const plate2 = du_cylinder(0.65, 0.08, SHARED_MATERIALS.silver, 0.05);
+        const plate3 = du_cylinder(0.75, 0.25, SHARED_MATERIALS.goldFlange, 2.05);
+        const plate4 = du_cylinder(0.75, 0.08, SHARED_MATERIALS.copperStill, 3.9);
+        const plate5 = du_cylinder(0.35, 0.08, SHARED_MATERIALS.copperStill, 3.98);
+        const plate6= du_cylinder(0.25, 2.6, SHARED_MATERIALS.lightGreySmooth, 4.0);
+        const plate7 = du_cylinder(0.45, 0.09, SHARED_MATERIALS.copperStill, 4.35);
+        const plate8 = du_cylinder(0.45, 0.08, SHARED_MATERIALS.lightGreySmooth, 4.28);
+        const plate9 = du_cylinder(0.75, 0.08, SHARED_MATERIALS.lightGreySmooth, 0.55);
+        const plate10 = du_cylinder(0.7, 0.2, SHARED_MATERIALS.copperStill, 5);
+        const plate11= du_cylinder(0.7, 0.2, SHARED_MATERIALS.lightGreySmooth, 4.8);
         
         function dupipe(r,d, x, y, z) {
             const shape = new THREE.Shape();
@@ -411,8 +407,7 @@ export default class DilutionRefrigerator {
                 };
                
             const geometry = new THREE.ExtrudeGeometry(shape, extrudesettings);
-            const material = new THREE.MeshStandardMaterial({color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.15, metalness: 1});
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.lightGreyMedium);
             duGroup.add(mesh);
             mesh.rotateX(- Math.PI / 2);
             mesh.position.y = y;
@@ -421,7 +416,6 @@ export default class DilutionRefrigerator {
             return mesh;
         };
         
-        
         dupipe(0.08, 1.7, 0.6*Math.cos(Math.PI/2), 0.55, -0.6*Math.sin(Math.PI/2));
         dupipe(0.08, 1.7, 0.6*Math.cos(Math.PI), 0.55, -0.6*Math.sin(Math.PI));
         dupipe(0.08, 1.7, 0.6*Math.cos(Math.PI*2), 0.55, -0.6*Math.sin(Math.PI*2));
@@ -429,10 +423,6 @@ export default class DilutionRefrigerator {
         dupipe(0.08, 1.7, 0.6*Math.cos(Math.PI*7/6), 2.2, -0.6*Math.sin(Math.PI*7/6));
         dupipe(0.08, 1.7, 0.6*Math.cos(Math.PI*11/6), 2.2, -0.6*Math.sin(Math.PI*11/6));
         dupipe(0.08, 1.7, 0.6*Math.cos(Math.PI*2/3), 2.2, -0.6*Math.sin(Math.PI*2/3));
-        
-        
-        
-        
         
         // Connecting tube from Helix to Plate 9
         function connectHelixToPlate9() {
@@ -447,14 +437,11 @@ export default class DilutionRefrigerator {
             ];
             const path = new THREE.CatmullRomCurve3(points);
             const geometry = new THREE.TubeGeometry(path, 64, 0.04, 8, false);
-            const material = new THREE.MeshStandardMaterial({ color: 0xd4af37, side: THREE.DoubleSide, roughness: 0.15, metalness: 1 });
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.goldFlange);
             duGroup.add(mesh);
         }
         
         connectHelixToPlate9();
-        
-        
         
         // Connecting tube from Helix upper end to the plate above (Still)
         function connectHelixToUpperPlate() {
@@ -477,14 +464,11 @@ export default class DilutionRefrigerator {
            
             const path = new THREE.CatmullRomCurve3(points);
             const geometry = new THREE.TubeGeometry(path, 64, 0.04, 8, false);
-            const material = new THREE.MeshStandardMaterial({ color: 0xd4af37, side: THREE.DoubleSide, roughness: 0.15, metalness: 1 });
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.goldFlange);
             duGroup.add(mesh);
         }
         
         connectHelixToUpperPlate();
-        
-        
         
         //rf cable
         const rfcableGrp = new THREE.Group();
@@ -496,58 +480,33 @@ export default class DilutionRefrigerator {
         rfcableGrp.scale.set(0.4,0.4,1);
         rfcableGrp.visible = true;
         
-        
         // 4. Plate Assembly (Plate + Connectors)
         const plateGroup = new THREE.Group();
         
         const plateGeometry = new RoundedBoxGeometry(3, 3, 0.3, 4, 0.1);
-        const plateMaterial = new THREE.MeshStandardMaterial({
-            color: 0xd4af37, // Steel Grey
-            metalness: 1,  // High metalness for a metallic look
-            roughness: 0.15   // Moderate roughness for a brushed or slightly dull steel
-        });
-        const plateMesh = new THREE.Mesh(plateGeometry, plateMaterial);
+        const plateMesh = new THREE.Mesh(plateGeometry, SHARED_MATERIALS.goldFlange);
         plateGroup.add(plateMesh);
         
         // Gold connector geometry and material
         const conGeometry = new THREE.CylinderGeometry(0.05, 0.1, 0.2, 12);
-        const conMaterial = new THREE.MeshStandardMaterial({
-            color: 0xffd700,
-            metalness: 1,
-            roughness: 0.15
-        });
-        
         
         const attenutorgroup = new THREE.Group();
-         
-         
          attenutorgroup.position.x = -0.6;
          attenutorgroup.position.z = -0.1;
          attenutorgroup.position.y = -0.06;
          
-         
          // attenutor main body
-        // attenutor main body
          const multiattenutor = new THREE.Group();
          const attenutorgeometry = new THREE.CylinderGeometry(1, 1, 2.2);
-         const attenutormaterial = new THREE.MeshStandardMaterial({
-             color:0xD4AF37,
-             metalness:1,
-             roughness:0.15,
-             clearcoat :0.4,
-             clearcoatRoughness :0
-         });
-         const attmainbody = new THREE.Mesh(attenutorgeometry,attenutormaterial);
+         const attmainbody = new THREE.Mesh(attenutorgeometry, SHARED_MATERIALS.goldFlange);
          
          multiattenutor.add(attmainbody);
          
          // female centre contact
          const femaleccGeom = new THREE.CylinderGeometry(0.1,0.1,2);
-         const femalecc = new THREE.Mesh(femaleccGeom,attenutormaterial);
+         const femalecc = new THREE.Mesh(femaleccGeom, SHARED_MATERIALS.goldFlange);
          multiattenutor.add(femalecc);
          femalecc.position.set(0,0.7,0);
-         
-         
          
          // female end
          const femaleendgroup = new THREE.Group();
@@ -568,29 +527,23 @@ export default class DilutionRefrigerator {
         
         const femaleEnd = new THREE.Mesh(
             femaleendgeometry,
-            attenutormaterial
+            SHARED_MATERIALS.goldFlange
         );
         
         femaleendgroup.add(femaleEnd);
         femaleEnd.position.set(0,1.7,0);
          
-         
          //ring fashion in female eend
          for(let i=1.2;i<=1.7;i+=0.15){
              const femaleringGeom = new THREE.TorusGeometry(0.4, 0.1, 16, 100);
-             const femalering = new THREE.Mesh(femaleringGeom, attenutormaterial);
+             const femalering = new THREE.Mesh(femaleringGeom, SHARED_MATERIALS.goldFlange);
              femalering.rotation.x =Math.PI/2;
              femalering.position.set(0.05,i,0);
              femaleendgroup.add(femalering);
              multiattenutor.add(femaleendgroup);
-         
          }
          
-         
-         
-         
          //hexagon nut
-         
          const hexnutbody = Hexnut(0.76,1.5);
          multiattenutor.add(hexnutbody);
          hexnutbody.position.set(0,1.5,0);
@@ -602,8 +555,6 @@ export default class DilutionRefrigerator {
          hexnutbody2.rotation.x =Math.PI/2;
          
          // male end
-         
-         // Male end
         const maleendgroup = new THREE.Group();
         
         const maleendshape = new THREE.Shape();
@@ -624,7 +575,7 @@ export default class DilutionRefrigerator {
         
         const maleEnd = new THREE.Mesh(
             maleEndGeom,
-            attenutormaterial
+            SHARED_MATERIALS.goldFlange
         );
         
         // Center the geometry
@@ -640,30 +591,22 @@ export default class DilutionRefrigerator {
          // ring fashion on male end
          for(let i=-3.2;i<=-2.7;i+=0.25){
              const maleringGeom = new THREE.TorusGeometry(0.6, 0.1, 16, 100);
-             const malering = new THREE.Mesh(maleringGeom, attenutormaterial);
+             const malering = new THREE.Mesh(maleringGeom, SHARED_MATERIALS.goldFlange);
              malering.rotation.x =Math.PI/2;
              malering.position.set(0.05,i,0);
              maleendgroup.add(malering);
              multiattenutor.add(maleendgroup);
-         
          }
          maleendgroup.position.y=0.5;
-         
          
          multiattenutor.scale.y=0.1;
          multiattenutor.scale.x=0.1;
          multiattenutor.scale.z=0.1;
          multiattenutor.position.set(0,0,0);
          multiattenutor.rotation.z=Math.PI;
-        
          
          attenutorgroup.add(multiattenutor);
          
-        
-        
-        
-        
-        
         rfcableGrp.add(plateGroup);
         
         const plates = [plateGroup]; // Keep track of all plates
@@ -682,8 +625,8 @@ export default class DilutionRefrigerator {
             const curveOffsetX = Math.sin(z * 1.5) * 0.2;
             const curveOffsetY = Math.cos(z * 1.5) * 0.2;
         
-        for (let i = -1.2; i < 1.2; i += 1) {
-                for (let j = -1.0; j < 1.2; j += 1) {
+        for (let i = -1.2; i < 1.2; i += 0.3) {
+                for (let j = -1.0; j < 1.2; j += 0.3) {
                     const connector = new THREE.Mesh(conGeometry, conMaterial);
                     // Position them at the cable's exact x,y + curve offset
                     connector.position.set(j + curveOffsetX, i + curveOffsetY, 0.14);
@@ -708,9 +651,6 @@ export default class DilutionRefrigerator {
             }
         }
         
-        
-           
-        
                 }
            
         );
@@ -724,16 +664,10 @@ export default class DilutionRefrigerator {
         }
         const curve = new THREE.CatmullRomCurve3(points); // Curve for the wire path
         const tubeGeometry = new THREE.TubeGeometry(curve, 100, 0.025, 8, false);
-        const tubeMaterial = new THREE.MeshStandardMaterial({
-            color: 0xE7E7E7,
-            metalness: 1,
-            roughness: 0.15
-        
-         });
         
          // Assuming you want to offset each cable along the y-axis
-         for(let i = -1.18; i < 1.2; i+=1) {
-            for(let j = -1.07; j < 1.2; j+=1) {
+         for(let i = -1.18; i < 1.2; i+=0.3) {
+            for(let j = -1.08; j < 1.2; j+=0.3) {
             const cable = new THREE.Mesh(tubeGeometry, tubeMaterial);
             cable.position.y = i;
             cable.position.x = j;
@@ -747,26 +681,24 @@ export default class DilutionRefrigerator {
          //rf filter
          //----------------
          const rffilterGrp = new THREE.Group();
-         const rffiltergeom = new THREE.BoxGeometry(0.4, 0.2, 2.5, 32);
+         const rffiltergeom = new THREE.BoxGeometry(0.22, 0.2, 2.5, 32);
           const rffilter = new THREE.Mesh(rffiltergeom,attenutormaterial);
-          rffilter.position.set(1.12,0,0.34);
+          rffilter.position.set(1.2,0,0.34);
           rffilter.rotation.x = Math.PI/2;
           rffilterGrp.add(rffilter);
          
-          const rffilterbaseGeom = new THREE.BoxGeometry(0.4,0.09,2.5,32);
+          const rffilterbaseGeom = new THREE.BoxGeometry(0.22,0.09,2.5,32);
           const rffilterbasemat = new THREE.MeshStandardMaterial({color:0xB87333,metalness:1,roughness:0.3});
           const rffilterbase = new THREE.Mesh(rffilterbaseGeom,rffilterbasemat);
-          rffilterbase.position.set(1.12,0.,0.2);
+          rffilterbase.position.set(1.2,0.,0.2);
          rffilterbase.rotation.x = Math.PI/2;
          rffilterGrp.add(rffilterbase);
          
-         const rffilterbaseplateG = new RoundedBoxGeometry(0.4, 0.01, 2.7, 2,0.02);
+         const rffilterbaseplateG = new RoundedBoxGeometry(0.22, 0.01, 2.7, 2,0.02);
          const rffilterbaseplate = new THREE.Mesh(rffilterbaseplateG,rffilterbasemat);
-          rffilterbaseplate.position.set(1.12,-0,0.15);
+          rffilterbaseplate.position.set(1.2,-0,0.15);
          rffilterbaseplate.rotation.x = Math.PI/2;
          rffilterGrp.add(rffilterbaseplate);
-         
-         
          
          //sma connector
          const baseattGroup= new THREE.Group();
@@ -779,7 +711,6 @@ export default class DilutionRefrigerator {
          baseattGroup.rotation.x = Math.PI/2;
          
          //rfcableGrp.add(baseattGroup);
-         
          
                 for (let y = -1.061; y < 1.061; y += 1) {
            
@@ -800,7 +731,6 @@ export default class DilutionRefrigerator {
              rfcableGrp.add(multirffilter);
         };
          
-        
         //still pump line
         const pumpline = new THREE.Group();
         this.group.add(pumpline);
@@ -821,13 +751,7 @@ export default class DilutionRefrigerator {
         
             // --- MAIN TUBE ---
             const tubeGeometry = new THREE.TubeGeometry(baseCurve, 100, mainTubeRadius, 16, false);
-            const tubeMaterial = new THREE.MeshStandardMaterial({
-                color: 0xE7E7E7,
-                metalness: 1,
-                roughness: 0.15,
-                side: THREE.DoubleSide
-            });
-            const mainTubeMesh = new THREE.Mesh(tubeGeometry, tubeMaterial);
+            const mainTubeMesh = new THREE.Mesh(tubeGeometry, SHARED_MATERIALS.lightGreyMedium);
             pumpline.add(mainTubeMesh);
         
             // --- HELIX COIL ---
@@ -881,12 +805,7 @@ export default class DilutionRefrigerator {
            
             // Create the geometry and mesh for the helix
             const helixGeometry = new THREE.TubeGeometry(helixCurve, helixSegments, coilThickness, 8, false);
-            const helixMaterial = new THREE.MeshStandardMaterial({
-                color: 0x71797E,
-                metalness: 1,
-                roughness: 0.15
-            });
-            const helixMesh = new THREE.Mesh(helixGeometry, helixMaterial);
+            const helixMesh = new THREE.Mesh(helixGeometry, SHARED_MATERIALS.helixWire);
            
             pumpline.add(helixMesh);
            
@@ -900,8 +819,7 @@ export default class DilutionRefrigerator {
                 };
         
                 const geometry = new THREE.ExtrudeGeometry(shape, extrudesettings);
-                const material = new THREE.MeshStandardMaterial({ color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.05, metalness: 1 });
-                const mesh = new THREE.Mesh(geometry, material);
+                const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.lightGreySmooth);
                 pumpline.add(mesh);
                 mesh.rotateX(-Math.PI / 2);
                 mesh.position.y = y;
@@ -931,8 +849,7 @@ export default class DilutionRefrigerator {
                 };
         
                 const geometry = new THREE.ExtrudeGeometry(shape, extrudesettings);
-                const material = new THREE.MeshStandardMaterial({ color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.05, metalness: 1 });
-                const mesh = new THREE.Mesh(geometry, material);
+                const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.lightGreySmooth);
                 pumpline.add(mesh);
                 mesh.position.y = y;
                 mesh.position.x = x;
@@ -954,8 +871,7 @@ export default class DilutionRefrigerator {
                     curveSegments: 64,
                 };
                 const geometry = new THREE.ExtrudeGeometry(shape, extrudesettings);
-                const material = new THREE.MeshStandardMaterial({ color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.05, metalness: 1 });
-                const mesh = new THREE.Mesh(geometry, material);
+                const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.lightGreySmooth);
                 pumpline.add(mesh);
                 mesh.rotateX(-Math.PI / 2);
                 mesh.position.y = y;
@@ -977,7 +893,7 @@ export default class DilutionRefrigerator {
           function ptc_pumpline_junction() {
             const mesh = new THREE.Mesh(
               new THREE.CylinderGeometry(0.2, 0.2, 1.4, 64),
-              new THREE.MeshStandardMaterial({ color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.05, metalness: 1 })
+              SHARED_MATERIALS.lightGreySmooth
             );
             mesh.position.y = -1.4;
             mesh.rotation.x = Math.PI / 2;
@@ -988,7 +904,7 @@ export default class DilutionRefrigerator {
         
             const mesh2 = new THREE.Mesh(
               new THREE.CylinderGeometry(0.25, 0.25, 0.9, 64),
-              new THREE.MeshStandardMaterial({ color: 0xE7E7E7, side: THREE.DoubleSide, roughness: 0.05, metalness: 1 })
+              SHARED_MATERIALS.lightGreySmooth
             );
             mesh2.position.y = -1.1;
             mesh2.position.x = 2.2;
@@ -996,7 +912,6 @@ export default class DilutionRefrigerator {
           }
           ptc_pumpline_junction();
         };
-        
         
         createPumpLineAssembly.call(this);
         
@@ -1012,8 +927,7 @@ export default class DilutionRefrigerator {
         
             // Wrap a tube around that path (path, tube segments, radius, radial segments, closed loop)
             const geometry = new THREE.TubeGeometry(path, 64, 0.025, 10 , false);
-            const material = new THREE.MeshStandardMaterial({ color: 0xC0C0C0,  side: THREE.DoubleSide, roughness: 0.1, metalness: 1});
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, SHARED_MATERIALS.silverTube);
             //Adds to scene
             duGroup.add(mesh);
             mesh.position.y = 5.4;
@@ -1027,40 +941,10 @@ export default class DilutionRefrigerator {
         pulseCooler.scale.set(0.8,0.6,0.8);
         pulseCooler.position.set(0.92,12.5,0.5); 
         this.group.add(pulseCooler);    
-
-        const silverMaterial =
-          new THREE.MeshPhysicalMaterial({
-            color: 0xd6d6d6,
-            metalness: 1,
-            roughness: 0.15
-          });
-        
-        const housingMaterial =
-          new THREE.MeshPhysicalMaterial({
-            color: 0x636A6E,
-            metalness: 1,
-            roughness: 0.15
-          });
-        
-        const copperMaterial =
-          new THREE.MeshPhysicalMaterial({
-            color: 0xb87333,
-            metalness: 1,
-            roughness: 0.15
-          })
-    
         
         // =================================================
         // Vacuum Tube
         // =================================================
-        
-        const polishedSteel =
-          new THREE.MeshPhysicalMaterial({
-            color: 'silver',
-            roughness: 0.15,
-            metalness: 1
-          });
-        
         const rightUpperCylinder =
           new THREE.Mesh(
             new THREE.CylinderGeometry(
@@ -1069,7 +953,7 @@ export default class DilutionRefrigerator {
               3.5,
               64
             ),
-            silverMaterial
+            SHARED_MATERIALS.silverPhysical
           );
         
         rightUpperCylinder.position.set(
@@ -1080,7 +964,6 @@ export default class DilutionRefrigerator {
         
         pulseCooler.add(rightUpperCylinder);
         
-        
         const leftRod =
           new THREE.Mesh(
             new THREE.CylinderGeometry(
@@ -1089,7 +972,7 @@ export default class DilutionRefrigerator {
               6.5,
               32
             ),
-            silverMaterial
+            SHARED_MATERIALS.silverPhysical
           );
         
         leftRod.position.set(
@@ -1099,8 +982,6 @@ export default class DilutionRefrigerator {
         );
         
         pulseCooler.add(leftRod);
-        
-        
         
         // =================================================
         // Copper Stage
@@ -1113,7 +994,7 @@ export default class DilutionRefrigerator {
             0.8,
             64
           ),
-          copperMaterial
+          SHARED_MATERIALS.copperPhysical
         );
         
         stage.position.y = -4.2;
@@ -1126,7 +1007,7 @@ export default class DilutionRefrigerator {
             1,
             64
           ),
-          copperMaterial
+          SHARED_MATERIALS.copperPhysical
         );
         
         copperCollar.position.set(
@@ -1150,7 +1031,7 @@ export default class DilutionRefrigerator {
               3.9,
               32
             ),
-            silverMaterial
+            SHARED_MATERIALS.silverPhysical
           );
         
           rod.position.set(
@@ -1168,7 +1049,7 @@ export default class DilutionRefrigerator {
               0.30,
               32
             ),
-            copperMaterial
+            SHARED_MATERIALS.copperPhysical
           );
         
           rodCollar.position.set(
@@ -1191,7 +1072,7 @@ export default class DilutionRefrigerator {
             0.25,
             64
           ),
-          copperMaterial
+          SHARED_MATERIALS.copperPhysical
         );
         
         bottomPlate.position.y = -8.3;
@@ -1214,7 +1095,7 @@ export default class DilutionRefrigerator {
               0.1,
               16
             ),
-            housingMaterial
+            SHARED_MATERIALS.housingPhysical
           );
         
           bolt.position.set(
@@ -1226,72 +1107,73 @@ export default class DilutionRefrigerator {
           pulseCooler.add(bolt);
         }
         
-        
-        function createBolt(radius, numBolts, x, y, z) {
-            const cloneGroup = new THREE.Group();
-            const boltGroup = new THREE.Group();
-           
-            // 1. Single metallic material for the whole bolt
-            const steelMaterial = new THREE.MeshStandardMaterial({
-                color: 0x889498,   // Steel gray
-                metalness: 0.9,    // Highly metallic
-                roughness: 0.25    // Slightly glossy
-            });
-        
-            // 2. Hexagonal Head (using 6 radial segments)
-            const head = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.3, 0.3, 0.2, 6),
-                steelMaterial
-            );
-           
-            // 3. Washer (adds a nice realistic detail under the head)
-            const washer = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.35, 0.35, 0.05, 10),
-                steelMaterial
-            );
-            washer.position.y = -0.125;
-        
-            // 4. Smooth Shaft
-            const shaft = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.15, 0.15, 1, 16),
-                steelMaterial
-            );
-            shaft.position.y = -0.8;
-           
-            boltGroup.add(head, washer, shaft);
-            boltGroup.scale.set(0.2, 0.2, 0.2);  
-           
-           
-            for (let i = 0; i < numBolts; i++) {
-                const clone = boltGroup.clone();
-                const angle = (i / numBolts) * Math.PI * 2;
-               
-                clone.position.x = Math.cos(angle) * radius;
-                clone.position.z = Math.sin(angle) * radius;
-                cloneGroup.add(clone);
-                cloneGroup.position.set(x,y,z);
-                this.group.add(cloneGroup);
+
+        // 2. Translate geometries to match their original local positions
+        SHARED_GEOS.boltWasher.translate(0, -0.125, 0);
+        SHARED_GEOS.boltShaft.translate(0, -0.8, 0);
+
+        // 3. Merge them into a single, unified bolt geometry
+        const mergedBoltGeo = BufferGeometryUtils.mergeGeometries([
+            SHARED_GEOS.boltHead, 
+            SHARED_GEOS.boltWasher, 
+            SHARED_GEOS.boltShaft
+        ]);
+
+        // 4. Store your bolt configurations in an array instead of function calls
+        const boltConfigs = [
+            { radius: 1.5, num: 10, x: 0, y: 0.03, z: 0 },
+            { radius: 0.5, num: 3, x: 0, y: 0.03, z: 0 },
+            { radius: 0.4, num: 6, x: -0.8, y: 2.53, z: 0.2 },
+            { radius: 1.7, num: 12, x: 0, y: 2.53, z: 0 },
+            { radius: 1.9, num: 12, x: 0, y: 5.03, z: 0 },
+            { radius: 0.3, num: 6, x: -0.8, y: 5.03, z: 0.2 },
+            { radius: 2.3, num: 15, x: 0, y: 7.53, z: 0 },
+            { radius: 0.6, num: 6, x: -0.8, y: 7.53, z: 0.2 },
+            { radius: 2.5, num: 15, x: 0, y: 10.03, z: 0 },
+            { radius: 0.75, num: 8, x: -1.7, y: 10.03, z: 0.2 },
+            { radius: 3.0, num: 15, x: 0, y: 11.95, z: 0 },
+            { radius: 0.8, num: 8, x: -1.7, y: 11.95, z: 0.2 },
+            { radius: 0.4, num: 4, x: -0.2, y: 10.1, z: -0.72 },
+            { radius: 0.9, num: 8, x: 1.5, y: 12.15, z: 0 },
+            { radius: 0.7, num: 8, x: 1.5, y: 12.95, z: 0 }
+        ];
+
+        // 5. Calculate the total number of bolts across all configurations
+        const totalBolts = boltConfigs.reduce((sum, config) => sum + config.num, 0);
+
+        // 6. Create the single InstancedMesh
+        const instancedBolts = new THREE.InstancedMesh(mergedBoltGeo, SHARED_MATERIALS.boltSteel, totalBolts);
+        this.group.add(instancedBolts);
+
+        // 7. Loop through the configs and position each instance
+        const dummy = new THREE.Object3D();
+        let currentInstanceIndex = 0;
+
+        boltConfigs.forEach(config => {
+            for (let i = 0; i < config.num; i++) {
+                const angle = (i / config.num) * Math.PI * 2;
+                
+                // Apply the same math used in your original clone logic
+                dummy.position.set(
+                    config.x + (Math.cos(angle) * config.radius),
+                    config.y,
+                    config.z + (Math.sin(angle) * config.radius)
+                );
+                
+                // Re-apply the scale from your original boltGroup
+                dummy.scale.set(0.2, 0.2, 0.2);
+                
+                // Update the dummy matrix and apply it to the specific instance index
+                dummy.updateMatrix();
+                instancedBolts.setMatrixAt(currentInstanceIndex, dummy.matrix);
+                
+                currentInstanceIndex++;
             }
-        }
-        
-        createBolt.call(this, 1.5, 10, 0, 0.03, 0);
-        createBolt.call(this, 0.5, 3, 0, 0.03, 0);
-        createBolt.call(this, 0.4, 6, -0.8, 2.53, 0.2);
-        createBolt.call(this, 1.7, 12, 0, 2.53, 0);
-        createBolt.call(this, 1.9, 12, 0, 5.03, 0);
-        createBolt.call(this, 0.3, 6, -0.8, 5.03, 0.2);
-        createBolt.call(this, 2.3, 15, 0, 7.53, 0);
-        createBolt.call(this, 0.6, 6, -0.8, 7.53, 0.2);
-        createBolt.call(this, 2.5, 15, 0, 10.03, 0);
-        // createBolt.call(this, 0.9, 9, 1, 10.25, 0.2);
-        createBolt.call(this, 0.75, 8, -1.7, 10.03, 0.2);
-        createBolt.call(this, 3, 15, 0, 11.95, 0);
-        createBolt.call(this, 0.8, 8, -1.7, 11.95, 0.2);
-        createBolt.call(this, 0.4, 4, -0.2, 10.1, -0.72);
-        createBolt.call(this, 0.9, 8, 1.5, 12.15, 0);
-        createBolt.call(this, 0.7, 8, 1.5, 12.95, 0);
-    
-    }
+        });
+
+        // 8. Tell the GPU that the matrices have been updated
+        instancedBolts.instanceMatrix.needsUpdate = true;
+    };
 
     getGroup(){
         return this.group;

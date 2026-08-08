@@ -14,12 +14,14 @@ export default class Renderer {
             antialias: true
 
         });
+        this.renderer.debug.checkShaderErrors = false;
         this.renderer.setSize(
             this.width, this.height
         );
         this.renderer.setPixelRatio(
             Math.min(window.devicePixelRatio, 2)
         );
+
     }
 
     resize(width, height) {

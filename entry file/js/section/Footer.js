@@ -51,6 +51,11 @@ export default class Footer{
                             <li data-target="#lab" id="lab" class="hover:text-primary transition-colors group-hover:translate-x-2">
                                 Laboratory                                          
                             </li>
+
+                            <li data-target="#experiments" id="lab" class="hover:text-primary transition-colors group-hover:translate-x-2">
+                                Experiments                                          
+                            </li>
+
                             <li data-target="#team" id="team" class="hover:text-primary transition-colors group-hover:translate-x-2">
                                 Team                                
                             </li>
@@ -135,12 +140,21 @@ export default class Footer{
                 <h4 class="text-lg font-semibold tracking-wide">
                     Navigation
                 </h4>
+                ${window.location.pathname != '/' ? `
                 <ul id="footerNavigation" class="mt-5 space-y-3 text-muted-foreground">
+                    <li id="home" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
+                        QMCLab   
+                    </li>
+                </ul>`
+                : `<ul id="footerNavigation" class="mt-5 space-y-3 text-muted-foreground">
                     <li data-target="#introduction" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
                         Introduction    
                     </li>
                     <li data-target="#lab" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
                         Laboratory                                          
+                    </li>
+                    <li data-target="#experiments" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
+                        Experiments                                          
                     </li>
                     <li data-target="#team" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
                         Team                                
@@ -148,8 +162,8 @@ export default class Footer{
                     <li data-target="#contact" class="nav-item cursor-pointer hover:text-primary transition-colors duration-200">
                         Contact
                     </li>
-                </ul>
-            </div>
+                </ul>`}
+            </div> 
 
             <!-- Connect Column -->
             <div>
@@ -200,8 +214,8 @@ export default class Footer{
                 ease: "power2.inOut"
             })
         })
-
-        this.element.querySelectorAll('[data-target]').forEach((item) => {
+        try{
+            this.element.querySelectorAll('[data-target]').forEach((item) => {
             item.addEventListener("click", () => {
                 gsap.to(window, {
                     duration: 1,
@@ -209,6 +223,15 @@ export default class Footer{
                     ease: "power2.inOut"
                 });
             });
-        });     
+        });
+        }catch(error){}
+        
+        
+        try{
+            this.element.querySelector('#home').addEventListener("click", () => {
+                window.location.href = '/'
+        });
+        }catch(error){}
+          
     };
 };
