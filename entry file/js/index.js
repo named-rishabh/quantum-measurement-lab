@@ -28,7 +28,7 @@ else if (window.matchMedia("(min-width: 768px) and (max-width: 1023px)").matches
     const { canvasWrapper, canvas } = interactiveLab.createDesktop();
     interactiveLab.eventListenerDesktop();
     new Experiments("desktop")
-    new Experience(canvasWrapper, canvas);
+    new Experience(canvasWrapper, canvas, true);
     new Team('mobile')
     new Contact('mobile')
     new Footer('desktop')
@@ -43,7 +43,7 @@ else{
     new Team('desktop');
     new Contact('desktop');
     new Footer('desktop');
-    new Experience(canvasWrapper, canvas);
+    new Experience(canvasWrapper, canvas, true);
 }
 
 

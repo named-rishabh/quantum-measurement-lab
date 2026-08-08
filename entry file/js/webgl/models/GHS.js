@@ -246,6 +246,9 @@ export default class GHS {
         
         const displayScreenGeo = new THREE.PlaneGeometry(0.53, 0.31);
         const displayScreen = new THREE.Mesh(displayScreenGeo, screenDisplayMaterial);
+
+        displayScreen.name = 'TelemetryScreenMesh';
+        
         displayScreen.position.set(0, -0.145, 0.372);
         chamberGroup.add(displayScreen);
         

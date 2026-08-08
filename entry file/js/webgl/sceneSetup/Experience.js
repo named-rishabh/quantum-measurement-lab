@@ -18,7 +18,7 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 
 export default class Experience {
 
-    constructor(canvasWrapper, canvas) {
+    constructor(canvasWrapper, canvas, scrollTrigger) {
         
         this.canvas = canvas;
         this.wrapper = canvasWrapper;
@@ -37,7 +37,9 @@ export default class Experience {
             });
         });
 
-        this.scroll = new Scroll(this);
+        if (scrollTrigger){
+            this.scroll = new Scroll(this);
+        }
 
         // FIX: Defer the initial update call
         requestAnimationFrame(() => {
