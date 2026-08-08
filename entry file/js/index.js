@@ -7,6 +7,7 @@ import Experiments from "./section/ExperminetCard.js";
 import Team from "./section/Team.js";
 import Contact from "./section/Contact.js";
 import Footer from "./section/Footer.js";
+import LoadingScreen from "./components/LoadingScreen.js";
 
  
 if (window.matchMedia('(max-width: 768px)').matches){
@@ -28,7 +29,8 @@ else if (window.matchMedia("(min-width: 768px) and (max-width: 1023px)").matches
     const { canvasWrapper, canvas } = interactiveLab.createDesktop();
     interactiveLab.eventListenerDesktop();
     new Experiments("desktop")
-    new Experience(canvasWrapper, canvas, true);
+    const loadingScreen = new LoadingScreen(canvasWrapper);
+    new Experience(canvasWrapper, canvas, true, loadingScreen);
     new Team('mobile')
     new Contact('mobile')
     new Footer('desktop')
@@ -43,7 +45,8 @@ else{
     new Team('desktop');
     new Contact('desktop');
     new Footer('desktop');
-    new Experience(canvasWrapper, canvas, true);
+    const loadingScreen = new LoadingScreen(canvasWrapper);
+    new Experience(canvasWrapper, canvas, true, loadingScreen);
 }
 
 

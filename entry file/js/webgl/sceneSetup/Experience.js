@@ -4,6 +4,7 @@
 // FPS statistics
 // Resize handling. Handles in Experience.js
 
+import * as THREE from "three";
 import { createScene } from "./Scene.js";
 import Camera from "./camera.js";
 import Renderer from "./renderer.js";
@@ -18,17 +19,25 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 
 export default class Experience {
 
-    constructor(canvasWrapper, canvas, scrollTrigger) {
+    constructor(canvasWrapper, canvas, scrollTrigger, loadingScreen) {
         
         this.canvas = canvas;
         this.wrapper = canvasWrapper;
+        this.loadingScreen = loadingScreen;
+
+        this.loadingManager = new THREE.LoadingManager(
+            () => {
+                this.loadingScreen.hide();
+            }
+        );
+
         this.scene = createScene();
         this.camera = new Camera(this);
         this.renderer = new Renderer(this);
         addEnvironment(this.scene, this.renderer.renderer);
         this.lights = new Lights(this);
         this.controls = new Controls(this);
-        this.world = new World(this);
+        this.world = new World(this, this.loadingManager);
 
         window.addEventListener('resize', ()=>{
             this.resize();

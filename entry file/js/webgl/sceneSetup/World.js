@@ -10,33 +10,30 @@ import Glasswall from "../models/glasswall.js";
 
 
 export default class World {
-    constructor(experience) {
+    constructor(experience, loadingManager) {
         this.scene = experience.scene;
+        this.gltfLoader = new GLTFLoader(loadingManager);
 
         const dilutionRefrigerator = new DilutionRefrigerator();
         this.scene.add(dilutionRefrigerator.getGroup());
 
-        const compressorLoader = new GLTFLoader()
-        compressorLoader.load('/glbFiles/Compressor.glb', (gltf) => {
-            const model = gltf.scene;
-            this.scene.add(model);
+        this.gltfLoader.load('/glbFiles/Compressor.glb', (gltf) => {
+            const compressorModel = gltf.scene;
+            this.scene.add(compressorModel);
         });
 
 
-        const GHS = new GLTFLoader()
-        GHS.load('/glbFiles/ghs.glb', (gltf) => {
-            const model = gltf.scene;
-            const screenMesh = model.getObjectByName('TelemetryScreenMesh');
-            this.scene.add(model);
+        this.gltfLoader.load('/glbFiles/ghs.glb', (gltf) => {
+            const ghsModel = gltf.scene;
+            this.scene.add(ghsModel);
         });
 
         const pipeAssembly = new PipeAssembly();
         this.scene.add(pipeAssembly.getGroup());
 
-        const standLoader = new GLTFLoader()
-        standLoader.load('/glbFiles/Stand.glb', (gltf) => {
-            const model = gltf.scene;
-            this.scene.add(model);
+        this.gltfLoader.load('/glbFiles/Stand.glb', (gltf) => {
+            const standModel = gltf.scene;
+            this.scene.add(standModel);
         });
 
         const controlRack = new ControlRack();
