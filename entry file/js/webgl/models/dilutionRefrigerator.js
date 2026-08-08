@@ -682,8 +682,8 @@ export default class DilutionRefrigerator {
             const curveOffsetX = Math.sin(z * 1.5) * 0.2;
             const curveOffsetY = Math.cos(z * 1.5) * 0.2;
         
-        for (let i = -1.2; i < 1.2; i += 0.3) {
-                for (let j = -1.0; j < 1.2; j += 0.3) {
+        for (let i = -1.2; i < 1.2; i += 1) {
+                for (let j = -1.0; j < 1.2; j += 1) {
                     const connector = new THREE.Mesh(conGeometry, conMaterial);
                     // Position them at the cable's exact x,y + curve offset
                     connector.position.set(j + curveOffsetX, i + curveOffsetY, 0.14);
@@ -732,8 +732,8 @@ export default class DilutionRefrigerator {
          });
         
          // Assuming you want to offset each cable along the y-axis
-         for(let i = -1.18; i < 1.2; i+=0.3) {
-            for(let j = -1.08; j < 1.2; j+=0.3) {
+         for(let i = -1.18; i < 1.2; i+=1) {
+            for(let j = -1.07; j < 1.2; j+=1) {
             const cable = new THREE.Mesh(tubeGeometry, tubeMaterial);
             cable.position.y = i;
             cable.position.x = j;
@@ -747,22 +747,22 @@ export default class DilutionRefrigerator {
          //rf filter
          //----------------
          const rffilterGrp = new THREE.Group();
-         const rffiltergeom = new THREE.BoxGeometry(0.22, 0.2, 2.5, 32);
+         const rffiltergeom = new THREE.BoxGeometry(0.4, 0.2, 2.5, 32);
           const rffilter = new THREE.Mesh(rffiltergeom,attenutormaterial);
-          rffilter.position.set(1.2,0,0.34);
+          rffilter.position.set(1.12,0,0.34);
           rffilter.rotation.x = Math.PI/2;
           rffilterGrp.add(rffilter);
          
-          const rffilterbaseGeom = new THREE.BoxGeometry(0.22,0.09,2.5,32);
+          const rffilterbaseGeom = new THREE.BoxGeometry(0.4,0.09,2.5,32);
           const rffilterbasemat = new THREE.MeshStandardMaterial({color:0xB87333,metalness:1,roughness:0.3});
           const rffilterbase = new THREE.Mesh(rffilterbaseGeom,rffilterbasemat);
-          rffilterbase.position.set(1.2,0.,0.2);
+          rffilterbase.position.set(1.12,0.,0.2);
          rffilterbase.rotation.x = Math.PI/2;
          rffilterGrp.add(rffilterbase);
          
-         const rffilterbaseplateG = new RoundedBoxGeometry(0.22, 0.01, 2.7, 2,0.02);
+         const rffilterbaseplateG = new RoundedBoxGeometry(0.4, 0.01, 2.7, 2,0.02);
          const rffilterbaseplate = new THREE.Mesh(rffilterbaseplateG,rffilterbasemat);
-          rffilterbaseplate.position.set(1.2,-0,0.15);
+          rffilterbaseplate.position.set(1.12,-0,0.15);
          rffilterbaseplate.rotation.x = Math.PI/2;
          rffilterGrp.add(rffilterbaseplate);
          
@@ -774,18 +774,18 @@ export default class DilutionRefrigerator {
          baseattGroup.add(femalecc);
          baseattGroup.add(femaleendgroup);
          baseattGroup.add(hexnutbody);
-         baseattGroup.scale.set(0.1,0.1,0.1);
-         baseattGroup.position.set(1.2,-1.09,0.4);
+         baseattGroup.scale.set(0.15,0.15,0.15);
+         baseattGroup.position.set(1,-1.09,0.4);
          baseattGroup.rotation.x = Math.PI/2;
          
          //rfcableGrp.add(baseattGroup);
          
          
-                for (let y = -1.061; y < 1.061; y += 0.3) {
+                for (let y = -1.061; y < 1.061; y += 1) {
            
                
                  const multirfconnector = baseattGroup.clone();
-                 multirfconnector.position.set(1.185, y, 0.32); // sits on top of filter
+                 multirfconnector.position.set(1.12, y, 0.32); // sits on top of filter
                  rffilterGrp.add(multirfconnector);
              }
          
@@ -794,7 +794,7 @@ export default class DilutionRefrigerator {
          // Remove the old x-only loop
          // Remove the old x-only loop
          // Remove the old x-only loop
-         for(let k=-2.1;k<=-0.2;k+=0.3){
+         for(let k=-2.0;k<=-0.2;k+=1){
              const multirffilter = rffilterGrp.clone();
              multirffilter.position.x=k;
              rfcableGrp.add(multirffilter);
