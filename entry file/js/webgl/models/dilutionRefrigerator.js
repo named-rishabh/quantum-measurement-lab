@@ -625,8 +625,8 @@ export default class DilutionRefrigerator {
             const curveOffsetX = Math.sin(z * 1.5) * 0.2;
             const curveOffsetY = Math.cos(z * 1.5) * 0.2;
         
-        for (let i = -1.2; i < 1.2; i += 0.3) {
-                for (let j = -1.0; j < 1.2; j += 0.3) {
+        for (let i = -1.2; i < 1.2; i += 1) {
+                for (let j = -1.0; j < 1.2; j += 1) {
                     const connector = new THREE.Mesh(conGeometry, SHARED_MATERIALS.goldConnector);
                     // Position them at the cable's exact x,y + curve offset
                     connector.position.set(j + curveOffsetX, i + curveOffsetY, 0.14);
@@ -666,8 +666,8 @@ export default class DilutionRefrigerator {
         const tubeGeometry = new THREE.TubeGeometry(curve, 100, 0.025, 8, false);
         
          // Assuming you want to offset each cable along the y-axis
-         for(let i = -1.18; i < 1.2; i+=0.3) {
-            for(let j = -1.08; j < 1.2; j+=0.3) {
+         for(let i = -1.18; i < 1.2; i+=1) {
+            for(let j = -1.08; j < 1.2; j+=1) {
             const cable = new THREE.Mesh(tubeGeometry, SHARED_MATERIALS.helixWire);
             cable.position.y = i;
             cable.position.x = j;
@@ -681,22 +681,22 @@ export default class DilutionRefrigerator {
          //rf filter
          //----------------
          const rffilterGrp = new THREE.Group();
-         const rffiltergeom = new THREE.BoxGeometry(0.22, 0.2, 2.5, 32);
+         const rffiltergeom = new THREE.BoxGeometry(0.4, 0.2, 2.5, 32);
           const rffilter = new THREE.Mesh(rffiltergeom,SHARED_MATERIALS.goldFlange);
-          rffilter.position.set(1.2,0,0.34);
+          rffilter.position.set(1.17,0,0.34);
           rffilter.rotation.x = Math.PI/2;
           rffilterGrp.add(rffilter);
          
-          const rffilterbaseGeom = new THREE.BoxGeometry(0.22,0.09,2.5,32);
+          const rffilterbaseGeom = new THREE.BoxGeometry(0.4,0.09,2.5,32);
           const rffilterbasemat = new THREE.MeshStandardMaterial({color:0xB87333,metalness:1,roughness:0.3});
           const rffilterbase = new THREE.Mesh(rffilterbaseGeom,rffilterbasemat);
-          rffilterbase.position.set(1.2,0.,0.2);
+          rffilterbase.position.set(1.17,0.,0.2);
          rffilterbase.rotation.x = Math.PI/2;
          rffilterGrp.add(rffilterbase);
          
-         const rffilterbaseplateG = new RoundedBoxGeometry(0.22, 0.01, 2.7, 2,0.02);
+         const rffilterbaseplateG = new RoundedBoxGeometry(0.4, 0.01, 2.7, 2,0.02);
          const rffilterbaseplate = new THREE.Mesh(rffilterbaseplateG,rffilterbasemat);
-          rffilterbaseplate.position.set(1.2,-0,0.15);
+          rffilterbaseplate.position.set(1.17,-0,0.15);
          rffilterbaseplate.rotation.x = Math.PI/2;
          rffilterGrp.add(rffilterbaseplate);
          
