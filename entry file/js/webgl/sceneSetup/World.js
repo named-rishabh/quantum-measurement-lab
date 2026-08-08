@@ -2,9 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import DilutionRefrigerator from "../models/dilutionRefrigerator.js";
-import Compressor from "../models/compressor.js";
 import PipeAssembly from "../models/pipeAssembly.js";
-import Stand from "../models/stand.js";
 import ControlRack from "../models/controlRack/CRindex.js";
 import Platform from "../models/Platform.js";
 import classicalComputer from "../models/classicalComp.js";
@@ -18,11 +16,15 @@ export default class World {
         const dilutionRefrigerator = new DilutionRefrigerator();
         this.scene.add(dilutionRefrigerator.getGroup());
 
-        const compressor = new Compressor();
-        this.scene.add(compressor.getGroup());
+        const compressorLoader = new GLTFLoader()
+        compressorLoader.load('/glbFiles/Compressor.glb', (gltf) => {
+            const model = gltf.scene;
+            this.scene.add(model);
+        });
 
-        const loader = new GLTFLoader()
-        loader.load('/glbFiles/ghs.glb', (gltf) => {
+
+        const GHS = new GLTFLoader()
+        GHS.load('/glbFiles/ghs.glb', (gltf) => {
             const model = gltf.scene;
             const screenMesh = model.getObjectByName('TelemetryScreenMesh');
             this.scene.add(model);
@@ -31,8 +33,11 @@ export default class World {
         const pipeAssembly = new PipeAssembly();
         this.scene.add(pipeAssembly.getGroup());
 
-        const stand = new Stand();
-        this.scene.add(stand.getGroup());
+        const standLoader = new GLTFLoader()
+        standLoader.load('/glbFiles/Stand.glb', (gltf) => {
+            const model = gltf.scene;
+            this.scene.add(model);
+        });
 
         const controlRack = new ControlRack();
         this.scene.add(controlRack.getGroup());
