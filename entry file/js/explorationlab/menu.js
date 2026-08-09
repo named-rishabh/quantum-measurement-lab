@@ -5,41 +5,41 @@ const menuConfig = {
             target: "cryostat",
             desc: "The primary cryogenic enclosure and thermal shielding for the setup.",
             subItems: [
-                { title: "1.1 50K Plate", target: "plate_50k", desc: "The 50K thermal stage." },
-                { title: "1.2 4K Plate", target: "plate_4k", desc: "The 4K thermal stage." },
-                { title: "1.3 Still", target: "still", desc: "The distillation stage." },
-                { title: "1.4 100mK Plate", target: "plate_100mk", desc: "The 100mK thermal plate." },
-                { title: "1.5 Mixing Chamber", target: "mixing_chamber", desc: "The mixing chamber for base temperature." },
+                { title: "1.1 50K Plate", target: "plate_50k", desc: "The 50K plate is a first cooling stage of dilution refigrator  done by incoming Helium-4 high pressure gas,this gas expand and absorbed heat from surronding of this plate  and cool down about 50k." },
+                { title: "1.2 4K Plate", target: "plate_4k", desc: "The 4K thermal stage ,again Helium-4 gas absorbed heat from surronding cool down about 4k." },
+                { title: "1.3 Still", target: "still", desc: "The distillation stage,is used to evaporate Helium-3 from the mixing of He-3/He-4,enabling continuous circulation in dilution refigrator " },
+                { title: "1.4 100mK Plate", target: "plate_100mk", desc: "The 100mK thermal plate,provide an intermediate low tempreture before they reach the mixing chamber." },
+                { title: "1.5 Mixing Chamber", target: "mixing_chamber", desc: "The mixing chamber for base temperature,is the coldest part of dilution refigrator where He-3 crosses from concentrated to diluted phase by absorbing heat from mixing chamber cool down about 10mk ." },
             ]
         },
         {
             title: "2. Control Unit",
             target: "ControlRack",
-            desc: "The entire room-temperature and cryogenic circuit architecture.",
+            desc: "The control rack contain VNA,octave and Thermometry unit,control the various instruments and system used in the experiments..",
             subItems: [
-                { title: "2.1 VNA", target: "VNA", desc: "..." },
-                { title: "2.2 Octave", target: "Octave", desc: "..." },
-                { title: "2.3 Thermometry unit", target: "Thermometry", desc: "..." },
+                { title: "2.1 VNA", target: "VNA", desc: "The vector network analyzer is used generate and measure microwave signals for characterizing the resonanter and qubit system ." },
+                { title: "2.2 Octave", target: "Octave", desc: "The octave is a microwave control and readout system to generate process,measure signal for quantum experiment ." },
+                { title: "2.3 Thermometry unit", target: "Thermometry", desc: "The thermometry unit measure the tempreture at different stage of cryogenic system ." },
             ]
         },
         {
             title: "3. GHS",
             target: "GHS",
-            desc: "The entire room-temperature and cryogenic circuit architecture.",
+            desc: "The Gass handling system contains the GHU and Dewar,manage the helium gas circulation ,storage and purification etc.",
             subItems: [
-                { title: "3.1 GHU", target: "GHU", desc: "..." },
-                { title: "3.2 Dewar", target: "Dewar", desc: "..." },
+                { title: "3.1 GHU", target: "GHU", desc: "The gas handling unit manages the circulation ,storage,pressure control and purify the Helium-3or Helium mixture(He-3/He-4) gas used in dilution refigrator " },
+                { title: "3.2 Dewar", target: "Dewar", desc: "The dewar is an isulated vessel used to store cryogenic liquid Helium-4 or Helium-3 /Helium-4 mixture while minimizing heat transfer from the surronding." },
             ]
         },
         {
             title: "4. Compressor",
             target: "Compressor",
-            desc: "The entire room-temperature and cryogenic circuit architecture.",
+            desc: "The compressor compress the Helium-4 gas to high pressure which is coming from PTC at low pressure,also it circulate this gas from PTC to compressor and vice versa so that maintain the cooling of cryostate .",
         },
                 {
             title: "5. Classical computer",
             target: "Computer",
-            desc: "The entire room-temperature and cryogenic circuit architecture.",
+            desc: "The classical computer control the experimental setup,communicate with experimental equipment ,and proccess the measurement  data.",
         },
     ]
 };
