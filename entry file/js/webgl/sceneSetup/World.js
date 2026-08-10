@@ -8,7 +8,7 @@ import Platform from "../models/Platform.js";
 import classicalComputer from "../models/classicalComp.js";
 import Glasswall from "../models/glasswall.js";
 import CryoCase from "../models/cryocase.js";
-
+import Mixingchamber from "../models/mixingchamber.js";
 
 export default class World {
     constructor(experience, loadingManager) {
@@ -51,5 +51,9 @@ export default class World {
 
         this.cryoCase = new CryoCase();
         this.scene.add(this.cryoCase.getGroup());
+
+        this.mixingchamber = new Mixingchamber();
+        this.scene.add(this.mixingchamber.getGroup());
+
     }
 }
