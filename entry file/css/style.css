@@ -56,10 +56,10 @@
 
 :root {
     /* Core Neon Colors */
-    --neon-cyan: #00f3ff;
-    --neon-cyan-glow: rgba(0, 243, 255, 0.6);
+    --neon-cyan: #2563EB;
+    --neon-cyan-glow: rgba(37, 99, 235, 0.6);
     --panel-bg: rgba(10, 14, 22, 0.75);
-    --panel-border: rgba(0, 243, 255, 0.2);
+    --panel-border: rgba(37, 99, 235, 0.2);
     --text-main: #e2e8f0;
 }
 
