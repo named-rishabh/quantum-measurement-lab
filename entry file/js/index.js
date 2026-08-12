@@ -9,45 +9,48 @@ import Contact from "./section/Contact.js";
 import Footer from "./section/Footer.js";
 import LoadingScreen from "./components/LoadingScreen.js";
 
- 
-if (window.matchMedia('(max-width: 768px)').matches){
-    console.log('mobile')
-    new Navbar('mobile')
-    new Hero('mobile')
-    new InteractiveLab('mobile');
-    new Experiments("mobile")
-    new Team('mobile')
-    new Contact('mobile')
-    new Footer('mobile')
-     
-}
-else if (window.matchMedia("(min-width: 768px) and (max-width: 1023px)").matches){
-    console.log('tablets')
-    new Navbar('mobile')
-    new Hero('mobile')
-    const interactiveLab = new InteractiveLab('desktop');
-    const { canvasWrapper, canvas } = interactiveLab.createDesktop();
-    interactiveLab.eventListenerDesktop();
-    new Experiments("desktop")
-    const loadingScreen = new LoadingScreen(canvasWrapper);
-    new Experience(canvasWrapper, canvas, true, loadingScreen);
-    new Team('mobile')
-    new Contact('mobile')
-    new Footer('desktop')
-}
-else{
-    new Navbar('desktop');
-    new Hero('desktop');
-    const interactiveLab = new InteractiveLab('desktop');
-    const { canvasWrapper, canvas } = interactiveLab.createDesktop();
-    interactiveLab.eventListenerDesktop();
-    new Experiments('desktop')
-    new Team('desktop');
-    new Contact('desktop');
-    new Footer('desktop');
-    const loadingScreen = new LoadingScreen(canvasWrapper);
-    new Experience(canvasWrapper, canvas, true, loadingScreen);
+function initApp() {
+    const width = window.innerWidth;
+
+    if (width < 768) {
+        console.log('mobile');
+        new Navbar('mobile');
+        new Hero('mobile');
+        new InteractiveLab('mobile');
+        new Experiments("mobile");
+        new Team('mobile');
+        new Contact('mobile');
+        new Footer('mobile');
+    } 
+    
+    else if (width >= 768 && width < 1023) {
+        console.log('tablet');
+        new Navbar('mobile');
+        new Hero('mobile');
+        const interactiveLab = new InteractiveLab('desktop');
+        const { canvasWrapper, canvas } = interactiveLab.createDesktop();
+        interactiveLab.eventListenerDesktop();
+        new Experiments("desktop");
+        const loadingScreen = new LoadingScreen(canvasWrapper);
+        new Experience(canvasWrapper, canvas, true, loadingScreen);
+        new Team('mobile');
+        new Contact('mobile');
+        new Footer('desktop');
+    } 
+    else {
+        console.log('desktop');
+        new Navbar('desktop');
+        new Hero('desktop');
+        const interactiveLab = new InteractiveLab('desktop');
+        const { canvasWrapper, canvas } = interactiveLab.createDesktop();
+        interactiveLab.eventListenerDesktop();
+        new Experiments('desktop');
+        new Team('desktop');
+        new Contact('desktop');
+        new Footer('desktop');
+        const loadingScreen = new LoadingScreen(canvasWrapper);
+        new Experience(canvasWrapper, canvas, true, loadingScreen);
+    }
 }
 
-
-
+initApp();
