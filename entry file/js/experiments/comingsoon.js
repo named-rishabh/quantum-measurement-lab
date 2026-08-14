@@ -8,7 +8,6 @@ export default class ExperimentComingSoon {
             this.eventListenerDesktop();
         }
 
-        this.eventListener();
         
     }
     getPixelAnimationHTML() {
@@ -198,6 +197,7 @@ export default class ExperimentComingSoon {
 
         backBtn?.addEventListener('click', () => {
             this.destroy();
+            window.location.href = "/";
         });
     }
 
