@@ -40,16 +40,16 @@ export default class Experiments {
 
                     <div class="mt-6">
                         <h4 class="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
-                            Wave-Particle Duality
+                            Experiments
                         </h4>
                         <ul class="space-y-2">
                             <li>
-                                <a href="#double-slit" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
+                                <a href="experiment.html"  data-experiment="one-tone-spectroscopy" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
                                     One-Tone Spectroscopy &rarr;
                                 </a>
                             </li>
                             <li>
-                                <a href="#photoelectric" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
+                                <a href="experiment.html"  data-experiment="two-tone-spectroscopy" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
                                     Two-Tone Spectroscopy &rarr;
                                 </a>
                             </li>
@@ -68,16 +68,16 @@ export default class Experiments {
 
                     <div class="mt-6">
                         <h4 class="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
-                            Single Qubit Operations
+                            Experiments
                         </h4>
                         <ul class="space-y-2">
                             <li>
-                                <a href="#rabi-oscillations" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
+                                <a href="experiment.html"  data-experiment="rabi-oscillations" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
                                     Rabi Oscillations & Pulse Shaping &rarr;
                                 </a>
                             </li>
                             <li>
-                                <a href="#ramsey-fringe" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
+                                <a href="experiment.html"  data-experiment="ramsey-interferometry" class="experiment-link block p-3 rounded-xl bg-background/50 border border-border/50 text-sm font-medium hover:text-primary hover:border-primary/50 transition-colors">
                                     Ramsey Interferometry &rarr;
                                 </a>
                             </li>
@@ -125,14 +125,18 @@ export default class Experiments {
                             </h4>
                             <ul class="space-y-3">
                                 <li>
-                                    <a href="#double-slit" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
-                                        <span class="text-sm font-medium group-hover:text-primary transition-colors">One-Tone Spectroscopy</span>
+                                    <a href="experiment.html"  data-experiment="one-tone-spectroscopy" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
+                                        <span class="text-sm font-medium group-hover:text-primary transition-colors">
+                                            One-Tone Spectroscopy
+                                        </span>
                                         <span class="text-xs text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all">&rarr;</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#photoelectric" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
-                                        <span class="text-sm font-medium group-hover:text-primary transition-colors">Two-Tone Spectroscopy</span>
+                                    <a href="experiment.html"  data-experiment="two-tone-spectroscopy" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
+                                        <span class="text-sm font-medium group-hover:text-primary transition-colors">
+                                            Two-Tone Spectroscopy
+                                        </span>
                                         <span class="text-xs text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all">&rarr;</span>
                                     </a>
                                 </li>
@@ -159,13 +163,13 @@ export default class Experiments {
                             </h4>
                             <ul class="space-y-3">
                                 <li>
-                                    <a href="#rabi-oscillations" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
+                                    <a href="experiment.html"  data-experiment="rabi-oscillations" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
                                         <span class="text-sm font-medium group-hover:text-primary transition-colors">Rabi Oscillations & Pulse Shaping</span>
                                         <span class="text-xs text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all">&rarr;</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#ramsey-fringe" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
+                                    <a href="experiment.html" data-experiment="ramsey-interferometry" class="experiment-link group flex items-center justify-between p-3.5 rounded-2xl bg-background/40 border border-border/60 hover:border-primary/60 hover:bg-background/80 transition-all duration-200">
                                         <span class="text-sm font-medium group-hover:text-primary transition-colors">Ramsey Interferometry</span>
                                         <span class="text-xs text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all">&rarr;</span>
                                     </a>
@@ -188,7 +192,7 @@ export default class Experiments {
         const links = this.element.querySelectorAll('.experiment-link');
         links.forEach(link => {
             link.addEventListener('click', (e) => {
-                const target = e.currentTarget.getAttribute('href');
+                const target = e.currentTarget.getAttribute('data-experiment');
                 console.log(`Mobile navigating to experiment: ${target}`);
             });
         });
@@ -196,10 +200,17 @@ export default class Experiments {
 
     eventListenerDesktop() {
         const links = this.element.querySelectorAll('.experiment-link');
+        window.localStorage.setItem('selectedExperiment', '');
         links.forEach(link => {
             link.addEventListener('click', (e) => {
-                const target = e.currentTarget.getAttribute('href');
-                console.log(`Desktop navigating to experiment: ${target}`);
+                const target = e.currentTarget.getAttribute('data-experiment');
+                if(window.localStorage.getItem('selectedExperiment') === '') {
+                    window.localStorage.setItem('selectedExperiment', target);
+                }
+                else if(window.localStorage.getItem('selectedExperiment') !== target) {
+                    window.localStorage.setItem('selectedExperiment', target);
+                }
+                
             });
         });
     }
