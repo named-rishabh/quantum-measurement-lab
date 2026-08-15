@@ -49,11 +49,13 @@ export default class World {
         const glasswall= new Glasswall();
         this.scene.add(glasswall.getGroup());
 
-        this.cryoCase = new CryoCase();
-        this.scene.add(this.cryoCase.getGroup());
+        //this.cryoCase = new CryoCase();
+        //this.scene.add(this.cryoCase.getGroup());
 
         this.mixingchamber = new Mixingchamber();
         this.scene.add(this.mixingchamber.getGroup());
+
+        
 
     }
 }

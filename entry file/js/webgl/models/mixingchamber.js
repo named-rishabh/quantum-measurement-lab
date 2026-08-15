@@ -1,32 +1,71 @@
 import * as THREE from 'three';
-
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 export default class Mixingchamber {
     constructor() {
         this.group = new THREE.Group();
-        this.group.position.set(-1,-5.5,0);
-        this.group.rotation.y=Math.PI/2;
+        this.group.position.set(-5,-4.5,0);
+        //this.group.rotation.y=Math.PI/2;
 
         this.buildMixingchamber();
     }
 
     buildMixingchamber() {
 
-        // Glass geometry
-         const basecylindermat = new THREE.MeshStandardMaterial({color: 0xd4af37, side: THREE.DoubleSide, roughness: 0.15, metalness: 1});
-         const backcylinderGeom = new THREE.CylinderGeometry(2.,2.,5.5,32,1,true,0,Math.PI);  
-         const backcylinder=new THREE.Mesh(backcylinderGeom,basecylindermat);   
-         this.group.add(backcylinder);
-         const basecylinderGeom = new THREE.CylinderGeometry(2,2,0.3);
-         const basecylinder =new THREE.Mesh(basecylinderGeom,basecylindermat);
-         this.group.add(basecylinder);
-         basecylinder.position.set(0.,-2.6,0);
-         const topcylinder= basecylinder.clone();
-         this.group.add(topcylinder);
-         topcylinder.position.set(0,2.6,0);
+        
+         const plateShape = new THREE.Shape();
+
+         plateShape.moveTo(-1.3, -1.5);
+         plateShape.lineTo(1.3, -1.5);
+         plateShape.lineTo(1.3, 1.5);
+         plateShape.lineTo(-1.3, 1.5);
+         plateShape.lineTo(-1.3, -1.5);
+
+
+         // Circular hole
+         for (let i = -1.1; i < 1.3; i += 0.4) 
+            for (let j = -1.1; j < 1.4; j += 0.4) {
+               const holePath = new THREE.Path();
+                holePath.absarc(
+                     i, // X position
+                      j, // Y position
+                     0.08, // radius
+                     0,
+                     Math.PI * 2,
+                      false
+                    );
+        
+         plateShape.holes.push(holePath);
+
+            }
+
+         const plategeom = new THREE.ExtrudeGeometry(plateShape, {
+            depth: 0.2,
+            bevelEnabled: false
+        });
+
+
+
+         
+
+
+         const platemat = new THREE.MeshStandardMaterial({
+            color: 0xD4AF37,
+            side: THREE.DoubleSide,
+            roughness: 0.15,
+             metalness: 1
+         });
+
+
+
+          const plate = new THREE.Mesh(plategeom, platemat);
+
+         
+
+         this.group.add(plate);
+
+         
 
         
-
-        // Frame
         
     }
 
