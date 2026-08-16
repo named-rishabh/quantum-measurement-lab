@@ -1,7 +1,7 @@
 // Handles OrbitControls or camera movement by the user.
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { TrackballControls } from "three/examples/jsm/Addons.js";
-
+import { Vector3 } from "three";
 
 export default class Controls {
     constructor(experience) {
@@ -30,6 +30,12 @@ export default class Controls {
         this.controls2.maxDistance = 65;
         this.controls2.minDistance = 3;
         
+        const minPan = new Vector3(-10, 0, 0);
+        const maxPan = new Vector3(10, 0, 0);
+
+        this.controls.addEventListener('change', () => {
+            this.controls.target.clamp(minPan, maxPan);
+        });
     }
 
     update() {
