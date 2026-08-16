@@ -14,7 +14,7 @@ export default class CryoCase {
         this.group.add(this.leftHalf);
         this.group.add(this.rightHalf);
         this.group.scale.set(1.2,1.2,1.2);
-        this.group.position.set(-5.15,-3,0.15);
+        this.group.position.set(-5.15,-5.6,0.15);
 
         this.buildCryocase();
     }
@@ -29,11 +29,11 @@ export default class CryoCase {
         
         const tiers = [
             [2.6, 0.0, 0.2], // Solid base
-            [2.6, 2.4, 3.8], // Hollow
+            [2.6, 2.4, 4.5], // Hollow
             [2.8, 2.6, 0.1], // Flange
-            [2.7, 2.5, 3.5], // Hollow
+            [2.7, 2.5, 4.2], // Hollow
             [3, 2.7, 0.1], // Flange
-            [2.9, 2.7, 3.5], // Hollow
+            [2.9, 2.7, 4.5], // Hollow
             [3, 2.7, 0.1]    // Top Flange
         ];
 
