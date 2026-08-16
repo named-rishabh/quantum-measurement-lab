@@ -60,5 +60,7 @@ export default class World {
         this.mixingchamber = new Mixingchamber();
         this.scene.add(this.mixingchamber.getGroup());
 
+        
+
     }
 }
