@@ -22,11 +22,11 @@ import { setupMenuEventListeners } from "../../explorationlab/menu.js";
 // 3. Define your target positions (you can also move this to a separate config file)
 const CAMERA_TARGETS = {
     'cryostat': { pos: { x: -5, y: 7, z: 20 }, lookAt: { x: -4, y: 2, z: 0 } },
-    'plate_50k': { pos: { x: -5, y: 8, z: 5 }, lookAt: { x: -6, y: 9, z: 0 } },
-    'plate_4k': { pos: { x: -5, y: 7, z: 6 }, lookAt: { x: -6, y: 7, z: 0 } },
-    'still': { pos: { x: -5, y: 5, z: 6 }, lookAt: { x: -5, y: 5, z: 0 } },
-    'plate_100mk': { pos: { x: -5, y: 2, z: 5 }, lookAt: { x: -5, y: 2, z: 0 } },
-    'mixing_chamber': { pos: { x: -5, y: -2, z: 5 }, lookAt: { x: -5, y: -1, z: 0 } },
+    'plate_50k': { pos: { x: -5, y: 7, z: 7 }, lookAt: { x: -6, y: 7, z: 5 } },
+    'plate_4k': { pos: { x: -5, y: 5, z: 6 }, lookAt: { x: -6, y: 5, z: 0 } },
+    'still': { pos: { x: -5, y: 3, z: 6 }, lookAt: { x: -5, y: 3, z: 0 } },
+    'plate_100mk': { pos: { x: -5, y: 0, z: 5 }, lookAt: { x: -5, y: 0, z: 0 } },
+    'mixing_chamber': { pos: { x: -5, y: -5, z: 5 }, lookAt: { x: -5, y: -3, z: 0 } },
     'ControlRack': { pos: { x: -20, y: 5, z: 30 }, lookAt: { x: -20, y: 5, z: 20 } },
     'Thermometry': { pos: { x: -20, y: 8, z: 15 }, lookAt: { x: -20, y: 8, z: 5 } },
     'Octave': { pos: { x: -21, y: 3, z: 15 }, lookAt: { x: -20, y: 5, z: 5 } },

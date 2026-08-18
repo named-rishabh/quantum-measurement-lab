@@ -134,7 +134,7 @@ export default class Mixingchamber {
         });
 
         const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load('./public/assets/images/chip.png');
+        const texture = textureLoader.load('./assets/images/chip.png');
         const chipMat = new THREE.MeshStandardMaterial({metalness: 0.9, roughness: 0.2, map : texture, transparent: true, alphaTest: 0.5 });
         const chipGeom = new THREE.BoxGeometry(1.7, 1.1, 0.02);
         const chip = new THREE.Mesh(chipGeom, chipMat);

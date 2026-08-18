@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 export default class CryoCase {
     constructor() {
@@ -13,13 +14,24 @@ export default class CryoCase {
         // 2. Add both halves to the main group
         this.group.add(this.leftHalf);
         this.group.add(this.rightHalf);
-        this.group.scale.set(1.2,1.2,1.2);
-        this.group.position.set(-5.15,-5.6,0.15);
+        this.group.scale.set(1.2, 1.2, 1.2);
+        this.group.position.set(-5.15, -5.6, 0.15);
 
         this.buildCryocase();
     }
 
     buildCryocase() {
+        // Safe Merge Helper
+        const safeMerge = (geometries) => {
+            if (!geometries || geometries.length === 0) return null;
+            const normalized = geometries.map((geo) => {
+                const g = geo.index ? geo.toNonIndexed() : geo;
+                if (!g.attributes.normal) g.computeVertexNormals();
+                return g;
+            });
+            return BufferGeometryUtils.mergeGeometries(normalized, false);
+        };
+
         const material = new THREE.MeshStandardMaterial({ 
             color: 0xb87333, 
             side: THREE.DoubleSide, 
@@ -32,15 +44,16 @@ export default class CryoCase {
             [2.6, 2.4, 4.5], // Hollow
             [2.8, 2.6, 0.1], // Flange
             [2.7, 2.5, 4.2], // Hollow
-            [3, 2.7, 0.1], // Flange
+            [3.0, 2.7, 0.1], // Flange
             [2.9, 2.7, 4.5], // Hollow
-            [3, 2.7, 0.1]    // Top Flange
+            [3.0, 2.7, 0.1]  // Top Flange
         ];
 
         let currentY = 0;
+        const leftGeoms = [];
+        const rightGeoms = [];
 
         tiers.forEach(([outR, inR, height]) => {
-            
             // --- LEFT HALF ---
             const leftShape = new THREE.Shape();
             if (inR > 0) {
@@ -58,11 +71,9 @@ export default class CryoCase {
                 curveSegments: 32, 
                 bevelEnabled: false 
             });
-            const leftMesh = new THREE.Mesh(leftGeo, material);
-            leftMesh.rotation.x = -Math.PI / 2;
-            leftMesh.position.y = currentY;
-            this.leftHalf.add(leftMesh);
-
+            leftGeo.rotateX(-Math.PI / 2);
+            leftGeo.translate(0, currentY, 0);
+            leftGeoms.push(leftGeo);
 
             // --- RIGHT HALF ---
             const rightShape = new THREE.Shape();
@@ -81,27 +92,41 @@ export default class CryoCase {
                 curveSegments: 32, 
                 bevelEnabled: false
             });
-            const rightMesh = new THREE.Mesh(rightGeo, material);
-            rightMesh.rotation.x = -Math.PI / 2;
-            rightMesh.position.y = currentY;
-            this.rightHalf.add(rightMesh);
+            rightGeo.rotateX(-Math.PI / 2);
+            rightGeo.translate(0, currentY, 0);
+            rightGeoms.push(rightGeo);
 
             currentY += height;
         });
+
+        // Merge and create single mesh per half
+        const mergedLeftGeo = safeMerge(leftGeoms);
+        if (mergedLeftGeo) {
+            const leftMesh = new THREE.Mesh(mergedLeftGeo, material);
+            leftMesh.castShadow = true;
+            leftMesh.receiveShadow = true;
+            this.leftHalf.add(leftMesh);
+        }
+
+        const mergedRightGeo = safeMerge(rightGeoms);
+        if (mergedRightGeo) {
+            const rightMesh = new THREE.Mesh(mergedRightGeo, material);
+            rightMesh.castShadow = true;
+            rightMesh.receiveShadow = true;
+            this.rightHalf.add(rightMesh);
+        }
     }
 
     open() {
         if (this.isOpen) return;
         this.isOpen = true;
         
-        // 1. Rotate the FRONT half (rightHalf) 180 degrees
         gsap.to(this.rightHalf.rotation, {
             y: Math.PI, 
             duration: 1.5,
             ease: "power2.inOut"
         });
 
-        // 2. Shrink it slightly on X and Z so it slides cleanly inside the back wall
         gsap.to(this.rightHalf.scale, {
             x: 0.98,
             z: 0.98,
@@ -114,14 +139,12 @@ export default class CryoCase {
         if (!this.isOpen) return;
         this.isOpen = false;
 
-        // Rotate it back to the front
         gsap.to(this.rightHalf.rotation, { 
             y: 0, 
             duration: 1.5, 
             ease: "power2.inOut" 
         });
 
-        // Scale it back to 100% so it seals flush again
         gsap.to(this.rightHalf.scale, { 
             x: 1, 
             z: 1, 

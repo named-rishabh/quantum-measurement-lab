@@ -1,252 +1,190 @@
 import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 export default class Compressor {
     constructor() {
         this.group = new THREE.Group();
         this.group.position.set(8.2, -4, -13);
         this.group.rotation.y = Math.PI;
-        //this.group.scale.set(1,0.8,1);
         this.buildCompressor();
     }
 
     buildCompressor() {
-        
-        // Main Body (Chassis) - Now 8x6.5x5
-        const bodyGeom = new THREE.BoxGeometry(8, 6.5, 5);
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x71797E, metalness: 1, roughness: 0.15 }); // Industrial Gray
-        const body = new THREE.Mesh(bodyGeom, bodyMat);
-        this.group.add(body);
-        
-        //front panel with controls (Scaled and positioned)
-        const panelGeom = new THREE.BoxGeometry(4, 2.2, 0.1 ); // Rounded box for front panel
-        const panelMat = new THREE.MeshStandardMaterial({ color: "black", metalness: 0.8, roughness: 0.2 });
-        this.group.add(new THREE.Mesh(panelGeom, panelMat));
-        this.group.children[1].position.set(0, 1.5, 2.55); // Front panel slightly protruding
-        //start button
+        // Shared Materials
+        const metallicMat = new THREE.MeshStandardMaterial({ color: 0x71797E, metalness: 1, roughness: 0.15 });
+        const blackMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.8, roughness: 0.3 });
+        const redMat = new THREE.MeshStandardMaterial({ color: 0xcc0000, metalness: 0.8, roughness: 0.1 });
+        const greenMat = new THREE.MeshStandardMaterial({ color: 'green', side: THREE.DoubleSide });
+        const whiteEmissiveMat = new THREE.MeshStandardMaterial({ color: 'white', emissive: 'white', emissiveIntensity: 0.5 });
+        const whiteBasicMat = new THREE.MeshBasicMaterial({ color: 'white', side: THREE.DoubleSide });
+        const mcbBodyMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+        // Geometry collection buckets for batching
+        const metallicGeoms = [];
+        const blackGeoms = [];
+        const redGeoms = [];
+
+        // 1. Chassis Body (Metallic)
+        metallicGeoms.push(new THREE.BoxGeometry(8, 6.5, 5));
+
+        // 2. Control Panel & Button
+        const panelGeom = new THREE.BoxGeometry(4, 2.2, 0.1);
+        panelGeom.translate(0, 1.5, 2.55);
+        blackGeoms.push(panelGeom);
+
         const buttonGeom = new THREE.CylinderGeometry(0.3, 0.3, 0.15, 32);
-        const buttonMat = new THREE.MeshStandardMaterial({ color: 0x71797E, metalness: 0.7, roughness: 0.3});
-        
-        const button= new THREE.Mesh(buttonGeom, buttonMat);
-        button.rotation.x = Math.PI / 2;
-        this.group.add(button);
-        this.group.children[2].position.set(1.4,1.7,2.55);
-        
-        //green ring
-        const ringGeom =new THREE.RingGeometry(0.2,0.28,16);
-        const ringMat =new THREE.MeshStandardMaterial({color:'green'});
-        const ring = new THREE.Mesh(ringGeom,ringMat);
-        ring.rotation.z = Math.PI/2;
+        buttonGeom.rotateX(Math.PI / 2);
+        buttonGeom.translate(1.4, 1.7, 2.55);
+        metallicGeoms.push(buttonGeom);
+
+        // Green Ring (Unique material, standalone mesh)
+        const ringGeom = new THREE.RingGeometry(0.2, 0.28, 16);
+        ringGeom.rotateZ(Math.PI / 2);
+        const ring = new THREE.Mesh(ringGeom, greenMat);
+        ring.position.set(1.4, 1.7, 2.64);
         this.group.add(ring);
-        ring.position.set(1.4,1.7,2.64);
-        
-        
-        
-        //screens (Scaled and positione
+
+        // Screen (Emissive, standalone mesh)
         const screenGeom = new THREE.BoxGeometry(2, 1.1, 0.05);
-        const screenMat = new THREE.MeshStandardMaterial({ color: 'white', emissive: 'white', emissiveIntensity: 0.5 });
-        const screen =new THREE.Mesh(screenGeom, screenMat);
+        const screen = new THREE.Mesh(screenGeom, whiteEmissiveMat);
+        screen.position.set(0, 1.5, 2.6);
         this.group.add(screen);
-        screen.position.set(0, 1.5, 2.6); // Screens slightly protruding
-        // Screens slightly protruding
-        
-        
-        // MCB body
-        const mcbBody = new THREE.Mesh(
-          new THREE.BoxGeometry(0.8, 1.4, 0.1),
-          new THREE.MeshStandardMaterial({ color: 0xffffff })
-        );
-        
-        // Front panel position
-        mcbBody.position.set(-2.5, 1.3, 2.5);
-        this.group.add(mcbBody);
-        
-        // MCB lever
-        const lever = new THREE.Mesh( new THREE.BoxGeometry(0.3, 0.7, 0.05),
-          new THREE.MeshStandardMaterial({ color: 0x222222 })
-        );
-        
-        lever.rotation.z = 0; // ON position
-        lever.position.set(0, -0.2, 0.15);
-        mcbBody.add(lever);
-        
-        // MCB label
-        const labelGeom = new THREE.BoxGeometry(0.7, 0.2, -0.005);
-        const labelMat = new THREE.MeshStandardMaterial({ color: 'red' });
-        const label = new THREE.Mesh(labelGeom, labelMat);
-        label.position.set(0, 0.35, 0.13);
-        mcbBody.add(label);
-        
-        // Handle Bars (Scaled and positioned)
-        function createHandle(xPos) {
-            const handleGroup = new THREE.Group();
-            const handleMat = new THREE.MeshStandardMaterial({ color: 'black' });
-           
-            // Vertical grip (Scaled to 1.6 units long)
+
+        // 3. MCB Component
+        const mcb = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.1), mcbBodyMat);
+        mcb.position.set(-2.5, 1.3, 2.5);
+        this.group.add(mcb);
+
+        const leverGeom = new THREE.BoxGeometry(0.3, 0.7, 0.05);
+        leverGeom.translate(-2.5, 1.1, 2.65);
+        blackGeoms.push(leverGeom);
+
+        const mcbLabelGeom = new THREE.BoxGeometry(0.7, 0.2, 0.005);
+        mcbLabelGeom.translate(-2.5, 1.65, 2.63);
+        redGeoms.push(mcbLabelGeom);
+
+        // 4. Handles
+        [-3.5, 3.5].forEach((xPos) => {
             const gripGeom = new THREE.CylinderGeometry(0.15, 0.15, 2.2);
-           
-            const grip = new THREE.Mesh(gripGeom, handleMat);
-           
-            // Top/Bottom supports (Scaled)
-            const supportGeom = new THREE.BoxGeometry(0.15, 0.15, 1.2);
-            const topSup = new THREE.Mesh(supportGeom, handleMat);
-            topSup.position.set(0, 1.1, 0.6);
-            const botSup = new THREE.Mesh(supportGeom, handleMat);
-            botSup.position.set(0, -1.1, 0.6);
-        
-            handleGroup.add(grip, topSup, botSup);
-            handleGroup.rotation.y= Math.PI ; // Rotate to be horizontal
-            handleGroup.position.set(xPos, 1.6, 2.5 + 0.3); // Extends slightly past front
-            return handleGroup;
+            gripGeom.translate(xPos, 1.6, 2.8 + 0.6);
+            blackGeoms.push(gripGeom);
+
+            const topSup = new THREE.BoxGeometry(0.15, 0.15, 1.2);
+            topSup.translate(xPos, 1.6 + 1.1, 2.8);
+            blackGeoms.push(topSup);
+
+            const botSup = new THREE.BoxGeometry(0.15, 0.15, 1.2);
+            botSup.translate(xPos, 1.6 - 1.1, 2.8);
+            blackGeoms.push(botSup);
+        });
+
+        // 5. Red Banner Label
+        const redBannerGeom = new THREE.BoxGeometry(8, 0.4, 0.1);
+        redBannerGeom.translate(0, 0, 2.5);
+        redGeoms.push(redBannerGeom);
+
+        // 6. Ventilation Grills
+        for (let i = -15; i < 5; i += 0.6) {
+            const hGrill = new THREE.BoxGeometry(5.1, 0.05, 0.1);
+            hGrill.translate(-1.5, i * 0.15 - 1.0, 2.45);
+            metallicGeoms.push(hGrill);
         }
-        // Handles shifted outward to match the new width
-        this.group.add(createHandle(3.5), createHandle(-3.5)); // Rotate handles to be vertical
-        
-        // red wala label
-        const geometries = new THREE.BoxGeometry(8, 0.4, 0.1);
-        const redmaterial = new THREE.MeshStandardMaterial({ color: 'red',metalness:0.8,roughness:0.1 });
-        const redlabel = new THREE.Mesh(geometries, redmaterial);
-        redlabel.position.set(0,0 , 2.5);
-        this.group.add(redlabel);
-        
-        //ventilation grill
-        
-        
-        for (let i = -15; i <5; i+=0.6){
-            const grillGeom =new THREE.BoxGeometry(5.1, 0.05, 0.1);
-            const grillMat=new THREE.MeshStandardMaterial({ color: 0x71797E,metalness:0.7,roughness:0.15  });
-            const grill = new THREE.Mesh(grillGeom,grillMat);
-            grill.position.set(-1.5, i * 0.15-1.0,2.45);
-          this.group.add(grill);
+        for (let i = -26.8; i < 8; i += 2) {
+            const vGrill = new THREE.BoxGeometry(0.1, 3.0, 0.1);
+            vGrill.translate(i * 0.15, -1.75, 2.45);
+            metallicGeoms.push(vGrill);
         }
-        for (let i = -26.8; i <8; i+=2){
-            const grillvGeom =new THREE.BoxGeometry(0.1, 3.0, 0.1);
-            const grillvMat=new THREE.MeshStandardMaterial({ color: 0x71797E,metalness:0.7,roughness:0.15 });
-            const grillv = new THREE.Mesh(grillvGeom,grillvMat);
-            grillv.position.set(i*0.15, -1.75,2.45);
-          this.group.add(grillv);
+
+        // 7. Pressure Gauges / Knobs
+        const knobGeom1 = new THREE.CylinderGeometry(0.55, 0.55, 0.1, 32);
+        knobGeom1.rotateX(Math.PI / 2);
+        knobGeom1.translate(3.3, -1, 2.5);
+
+        const knobGeom2 = new THREE.CylinderGeometry(0.55, 0.55, 0.1, 32);
+        knobGeom2.rotateX(Math.PI / 2);
+        knobGeom2.translate(1.7, -1, 2.5);
+
+        const mergedKnobsGeom = BufferGeometryUtils.mergeGeometries([knobGeom1, knobGeom2]);
+        this.group.add(new THREE.Mesh(mergedKnobsGeom, whiteBasicMat));
+
+        // 8. Caster Wheels
+        [
+            [3.2, 1.7], [-3.2, 1.7],
+            [3.2, -1.7], [-3.2, -1.7]
+        ].forEach(([x, z]) => {
+            const wheelGeom = new THREE.CylinderGeometry(0.6, 0.6, 0.35, 16);
+            wheelGeom.rotateZ(Math.PI / 2);
+            wheelGeom.translate(x, -3.3, z);
+            blackGeoms.push(wheelGeom);
+        });
+
+        // 9. Pipe Sleeves (Replaces loop of 160 ring planes with solid geometry)
+        [1.7, 3.3].forEach((xPos) => {
+            const sleeveGeom = new THREE.CylinderGeometry(0.2, 0.2, 0.6, 16, 1, true);
+            sleeveGeom.rotateX(Math.PI / 2);
+            sleeveGeom.translate(xPos, -2, 2.4);
+            metallicGeoms.push(sleeveGeom);
+        });
+
+        // 10. Pipes (Tubes)
+        const pipePoints1 = [
+            new THREE.Vector3(1.7, -2, 2.7),
+            new THREE.Vector3(1.7, -2, 3.2),
+            new THREE.Vector3(1.7, -1.6, 3.45),
+            new THREE.Vector3(1.8, 3, 3.5),
+            new THREE.Vector3(2, 4, 3),
+            new THREE.Vector3(2, 3.8, 0),
+            new THREE.Vector3(2.45, 3.8, -7),
+            new THREE.Vector3(2.45, 4, -7),
+            new THREE.Vector3(2.8, 15.2, -7),
+            new THREE.Vector3(2.8, 15.2, -7.5),
+            new THREE.Vector3(2.8, 15.4, -16),
+            new THREE.Vector3(2.8, 15.5, -16),
+            new THREE.Vector3(2.8, 17, -16),
+            new THREE.Vector3(3, 17.1, -16),
+            new THREE.Vector3(4, 17.1, -16)
+        ];
+
+        const pipePoints2 = [
+            new THREE.Vector3(3.3, -2, 2.7),
+            new THREE.Vector3(3.3, -2, 3.2),
+            new THREE.Vector3(3.3, -1.6, 3.45),
+            new THREE.Vector3(3.4, 3, 3.5),
+            new THREE.Vector3(3.4, 4, 3),
+            new THREE.Vector3(3.4, 3.8, 0),
+            new THREE.Vector3(3, 3.8, -6.5),
+            new THREE.Vector3(3, 4, -6.5),
+            new THREE.Vector3(3, 15.2, -6.5),
+            new THREE.Vector3(3.1, 15.2, -7.5),
+            new THREE.Vector3(3.1, 15.5, -16),
+            new THREE.Vector3(3.1, 16.6, -16),
+            new THREE.Vector3(4, 16.7, -16)
+        ];
+
+        [pipePoints1, pipePoints2].forEach((pts) => {
+            const curve = new THREE.CatmullRomCurve3(pts);
+            const pipeGeom = new THREE.TubeGeometry(curve, 100, 0.1, 12, false);
+            metallicGeoms.push(pipeGeom);
+        });
+
+        // 11. Final Batched Merges
+        if (metallicGeoms.length > 0) {
+            const mergedMetallic = BufferGeometryUtils.mergeGeometries(metallicGeoms, false);
+            this.group.add(new THREE.Mesh(mergedMetallic, metallicMat));
         }
-        
-         //  Pressure Gauge/Knob
-         const loader = new THREE.TextureLoader();
-         const knobGeom = new THREE.CylinderGeometry(0.55, 0.55, 0.1, 32);
-         const knobMat = new THREE.MeshBasicMaterial({
-         color:'white',
-         side: THREE.DoubleSide
-         });
-         const knob = new THREE.Mesh(knobGeom, knobMat);
-         knob.position.set(3.3, -1,2.5 );
-         knob.rotation.x =Math.PI/2;
-      
-         this.group.add(knob);
 
-         const knob2 = knob.clone();
-         knob2.position.x = 1.7;
-         this.group.add(knob2);
-         console.log("Texture loaded");
-         // Caster Wheels
-         function createWheel(x, z) {
-          const wheel = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.6, 0.6, 0.35, 16),
-          new THREE.MeshStandardMaterial({ color: 'black', metalness: 0.5, roughness: 0.5 })
-        );
-         wheel.rotation.z = Math.PI / 2;
-    
-         wheel.position.set(x, -3.3, z);
-         return wheel;
+        if (blackGeoms.length > 0) {
+            const mergedBlack = BufferGeometryUtils.mergeGeometries(blackGeoms, false);
+            this.group.add(new THREE.Mesh(mergedBlack, blackMat));
         }
-         this.group.add(
-         createWheel(3.2, 1.7),
-         createWheel(-3.2, 1.7),
-         createWheel(3.2, -1.7),
-         createWheel(-3.2, -1.7)
-        );
-         // ring for the fornt side
-         for(let i = -3; i < 1; i+=0.05){
-         const compressorringGeom =new THREE.RingGeometry(0.1,0.2,16);
-         const compressorringMat =new THREE.MeshStandardMaterial({color:0x636A6E, metalness:1, roughness:0.15});
-         const compressorring = new THREE.Mesh(compressorringGeom,compressorringMat);
-         compressorring.rotation.z = Math.PI/2;
-         this.group.add(compressorring);
-         compressorring.position.set(3.3,-2 ,2.55+i*0.15);
-         const compressorring2=compressorring.clone();
-         this.group.add(compressorring2);
-        compressorring2.position.set(1.7, -2, 2.55+i*0.15);
+
+        if (redGeoms.length > 0) {
+            const mergedRed = BufferGeometryUtils.mergeGeometries(redGeoms, false);
+            this.group.add(new THREE.Mesh(mergedRed, redMat));
         }
-         
-        
-    const compressorpipePoints1 = [
-        // Start (same)
-         new THREE.Vector3(1.7, -2, 2.7),
-
-         // Straight in Z
-         new THREE.Vector3(1.7, -2, 3.2),
-         new THREE.Vector3(1.7, -1.6, 3.45),
-         new THREE.Vector3(1.8, 3, 3.5),
-         new THREE.Vector3(2, 4, 3),
-         new THREE.Vector3(2, 3.8, 0),
-         new THREE.Vector3(2.45, 3.8, -7),
-         new THREE.Vector3(2.45, 4, -7),
-         new THREE.Vector3(2.8, 15.2, -7),
-         new THREE.Vector3(2.8, 15.2, -7),
-         new THREE.Vector3(2.8, 15.2, -7.5),
-         new THREE.Vector3(2.8, 15.4, -16),
-         new THREE.Vector3(2.8, 15.5, -16),
-         new THREE.Vector3(2.8, 17, -16),
-         new THREE.Vector3(3, 17.1, -16),
-         new THREE.Vector3(4, 17.1, -16),
-    ];
-
-        
-    const compressorpipePoints2 = [
-            // Start from the second knob
-         new THREE.Vector3(3.3, -2, 2.7),
-         new THREE.Vector3(3.3, -2, 3.2),
-         new THREE.Vector3(3.3, -1.6, 3.45),
-         new THREE.Vector3(3.4, 3, 3.5),
-         new THREE.Vector3(3.4, 4, 3),
-         new THREE.Vector3(3.4, 3.8, 0),
-         new THREE.Vector3(3, 3.8, -6.5),
-         new THREE.Vector3(3, 4, -6.5),
-         new THREE.Vector3(3, 15.2, -6.5),
-         new THREE.Vector3(3, 15.2, -6.5),
-         new THREE.Vector3(3.1, 15.2, -7.5),
-         new THREE.Vector3(3.1, 15.5, -16),
-         new THREE.Vector3(3.1, 15.5, -16),
-         new THREE.Vector3(3.1, 16.6, -16),
-         new THREE.Vector3(3.1, 16.6, -16),
-         new THREE.Vector3(4, 16.7, -16),
-    ];
-
-    const points = [compressorpipePoints1, compressorpipePoints2];
-    for ( const point of points) {
-        
-        const compressorpipeCurve = new THREE.CatmullRomCurve3(point);
-        
-        const compressorpipeGeom = new THREE.TubeGeometry(
-            compressorpipeCurve,
-            100,
-            0.1,
-            12,
-            false
-        );
-
-        const compressorpipeMat = new THREE.MeshStandardMaterial({color: 0x636A6E,
-            metalness: 1,
-            roughness: 0.15});
-        
-        
-        
-        const compressorpipe = new THREE.Mesh(compressorpipeGeom, compressorpipeMat);
-        this.group.add(compressorpipe);
-
     }
-        
 
-    }
-  
-
-     getGroup(){
+    getGroup() {
         return this.group;
     }
 }

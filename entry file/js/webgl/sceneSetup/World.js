@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import DilutionRefrigerator from "../models/dilutionRefrigerator.js";
@@ -51,8 +52,8 @@ export default class World {
         const platform = new Platform();
         this.scene.add(platform.getGroup());
 
-        const glasswall= new Glasswall();
-        this.scene.add(glasswall.getGroup());
+        // const glasswall= new Glasswall();
+        // this.scene.add(glasswall.getGroup());
 
         this.cryoCase = new CryoCase();
         this.scene.add(this.cryoCase.getGroup());
@@ -60,7 +61,44 @@ export default class World {
         this.mixingchamber = new Mixingchamber();
         this.scene.add(this.mixingchamber.getGroup());
 
-        
+        // Using your Compressor class
 
+
+        const stand = new DilutionRefrigerator();
+        const ghsGroup = stand.getGroup();
+
+    // Call the export function (e.g., on a button click or right after instantiating)
+        // this.exportToGLB(ghsGroup, 'DilutionRefrigerator_.glb');
     }
+
+    exportToGLB(inputObject, filename = 'model.glb') {
+    const exporter = new GLTFExporter();
+
+    const options = {
+        binary: true,           // Output as .glb (binary format)
+        trs: false,             // Preserves position, rotation, scale matrices
+        onlyVisible: true,      // Skips hidden objects
+        truncateDrawRange: true,
+        embedImages: true       // Embed textures directly into the GLB
+    };
+
+    exporter.parse(
+        inputObject,
+        (gltf) => {
+            // Success callback: gltf is an ArrayBuffer when binary: true
+            const blob = new Blob([gltf], { type: 'application/octet-stream' });
+            
+            // Trigger automatic browser download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        },
+        (error) => {
+            console.error('An error occurred while exporting the GLB:', error);
+        },
+        options
+    );
+}
 }

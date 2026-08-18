@@ -5,54 +5,51 @@ import Octave from "./Octave.js";
 import Rack from "./Rack.js";
 import VNA from "./VNA.js";
 import ThermometricUnit from "./ThermometricUnit.js";
-import Wire from "./Wire.js";
+import WireManager from "./Wire.js";
 
 import { Group, Vector3 } from "three";
 
 export default class ControlRack {
-
     constructor() {
         this.componentSetUp();
         this.wireUpRack();
-        this.getGroup();
     }
 
-    componentSetUp(){
-        this.controlRack = new Group()
-        this.controlRack.scale.set(3.5,3.5,3.5);
-        this.controlRack.position.set(-20,-8,5);
+    componentSetUp() {
+        this.controlRack = new Group();
+        this.controlRack.scale.set(3.5, 3.5, 3.5);
+        this.controlRack.position.set(-20, -8, 5);
 
         this.opx = new OPX();
-        this.opx.group.position.set(0,3.5,0);
-        this.opx.group.scale.set(0.45,0.5,0.5)
+        this.opx.group.position.set(0, 3.5, 0);
+        this.opx.group.scale.set(0.45, 0.5, 0.5);
         this.controlRack.add(this.opx.group);
 
         this.octave = new Octave();
-        this.octave.group.position.set(0,4.05,0 );
-        this.octave.group.scale.set(0.4,0.5,0.5);
+        this.octave.group.position.set(0, 4.05, 0);
+        this.octave.group.scale.set(0.4, 0.5, 0.5);
         this.controlRack.add(this.octave.group);
 
         this.rack = new Rack();
-        this.rack.group.position.set(0,0.1,0);
-        this.rack.group.scale.set(4,2.25,2);
+        this.rack.group.position.set(0, 0.1, 0);
+        this.rack.group.scale.set(4, 2.25, 2);
         this.controlRack.add(this.rack.group);
 
         this.vna = new VNA();
-        this.vna.group.position.set(0,2.5, 0);
-        this.vna.group.scale.set(0.4,0.5,0.5);
+        this.vna.group.position.set(0, 2.5, 0);
+        this.vna.group.scale.set(0.4, 0.5, 0.5);
         this.controlRack.add(this.vna.group);
 
         this.resistanceBridge = new ThermometricUnit();
-        this.resistanceBridge.group.position.set(0, 4.6,0);
-        this.resistanceBridge.group.scale.set(0.055,0.055,0.055);
-        this.resistanceBridge.group.rotateX(-Math.PI/180);
-        this.controlRack.add(this.resistanceBridge.group);    
-
+        this.resistanceBridge.group.position.set(0, 4.6, 0);
+        this.resistanceBridge.group.scale.set(0.055, 0.055, 0.055);
+        this.resistanceBridge.group.rotateX(-Math.PI / 180);
+        this.controlRack.add(this.resistanceBridge.group);
     }
 
     wireUpRack() {
         const rawConnectionPaths = [
-            // OPXToOctave 1 - 3(digital)
+            // OPXToOctave 1 - 3 (Digital)
             [[-0.610, 3.55, 0.68], [-0.520, 3.69, 0.90], [-0.520, 3.89, 0.90], [-0.400, 3.96, 0.68]],
             [[-0.515, 3.55, 0.68], [-0.450, 3.69, 0.90], [-0.450, 3.89, 0.90], [-0.320, 3.96, 0.68]],
             [[-0.425, 3.55, 0.68], [-0.350, 3.69, 0.90], [-0.350, 3.89, 0.90], [-0.240, 3.96, 0.68]],
@@ -74,20 +71,26 @@ export default class ControlRack {
             [[ 0.789, 3.56, 0.68], [ 0.850, 3.69, 0.90], [ 0.850, 3.89, 0.90], [ 0.800, 4.12, 0.68]]
         ];
 
-        this.wires = [];
+        // 1. Single manager instance
+        this.wireManager = new WireManager();
 
+        // 2. Register all coordinate paths into the batch
         rawConnectionPaths.forEach((pathPoints) => {
             const vectorPath = pathPoints.map(([x, y, z]) => new Vector3(x, y, z));
-            
-            const wire = new Wire(vectorPath);
-            this.wires.push(wire);
-            this.controlRack.add(wire.group);
+            this.wireManager.addWire(vectorPath, {
+                color: "#0257db",
+                thickness: 0.012
+            });
         });
-    }
 
+        // 3. Build & merge into 1 single mesh draw call
+        this.wireManager.buildWires();
+
+        // 4. Attach to rack root group
+        this.controlRack.add(this.wireManager.getGroup());
+    }
 
     getGroup() {
         return this.controlRack;
     }
-
 }

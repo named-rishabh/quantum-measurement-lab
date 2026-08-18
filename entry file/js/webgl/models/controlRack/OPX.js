@@ -1,4 +1,5 @@
-import { Group, MeshStandardMaterial, Mesh, BoxGeometry, CapsuleGeometry, PointLight, CylinderGeometry, MeshBasicMaterial, ExtrudeGeometry, Shape } from "three";
+import { Group, MeshStandardMaterial, Mesh, BoxGeometry, CapsuleGeometry, CylinderGeometry, MeshBasicMaterial } from "three";
+import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 export default class OPX {
   constructor() {
@@ -7,225 +8,248 @@ export default class OPX {
   }
 
   createModel() {
+    // Safe geometry merge utility to prevent attribute and indexing mismatches
+    function safeMerge(geometries) {
+      if (!geometries || geometries.length === 0) return null;
+      const normalized = geometries.map((geo) => {
+        const g = geo.index ? geo.toNonIndexed() : geo;
+        if (!g.attributes.normal) g.computeVertexNormals();
+        return g;
+      });
+      return BufferGeometryUtils.mergeGeometries(normalized, false);
+    }
+
     // ---------- Chassis Dimensions ----------
     const CHASSIS_W = 4.9;
     const CHASSIS_H = 1;
     const CHASSIS_D = 2.6;
-    
     const FRONT_Z = CHASSIS_D / 2;
     const BACK_Z = -CHASSIS_D / 2;
 
-    // Common Textures/Materials
+    // ---------- Materials ----------
     const bodyMat = new MeshStandardMaterial({ color: 0x161618, metalness: 0.6, roughness: 0.5 });
     const bevelMat = new MeshStandardMaterial({ color: 0x2c2c30, metalness: 0.8, roughness: 0.3 });
+    const capsuleMat = new MeshStandardMaterial({ color: 0x050505, metalness: 0.1, roughness: 0.05 });
     const goldMat = new MeshStandardMaterial({ color: 0xd4af37, metalness: 0.9, roughness: 0.1 });
     const silverMat = new MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.2 });
     const darkPlastMat = new MeshStandardMaterial({ color: 0x111111, roughness: 0.7 });
     const greenMat = new MeshStandardMaterial({ color: 0x00a86b, roughness: 0.5 });
+    const greenInteriorMat = new MeshStandardMaterial({ color: 0x008754, roughness: 0.6 });
     const redMat = new MeshStandardMaterial({ color: 0xcc1111, roughness: 0.4 });
+    const dividerMat = new MeshBasicMaterial({ color: 0x00d8ff });
 
-    // 1. Main Chassis Box & Bevel
-    const bodyGeo = new BoxGeometry(CHASSIS_W, CHASSIS_H, CHASSIS_D);
-    const body = new Mesh(bodyGeo, bodyMat);
+    // Geometry Buckets
+    const goldGeoms = [];
+    const silverGeoms = [];
+    const darkPlastGeoms = [];
+    const greenGeoms = [];
+    const greenInteriorGeoms = [];
+    const dividerGeoms = [];
+
+    // 1. Main Chassis & Bevel
+    const body = new Mesh(new BoxGeometry(CHASSIS_W, CHASSIS_H, CHASSIS_D), bodyMat);
     body.castShadow = true;
     body.receiveShadow = true;
     this.group.add(body);
 
-    const bevelGeo = new BoxGeometry(CHASSIS_W * 0.995, 0.02, CHASSIS_D * 0.995);
-    const bevel = new Mesh(bevelGeo, bevelMat);
+    const bevel = new Mesh(new BoxGeometry(CHASSIS_W * 0.995, 0.02, CHASSIS_D * 0.995), bevelMat);
     bevel.position.y = CHASSIS_H / 2 + 0.001;
     this.group.add(bevel);
-
 
     // ==========================================
     // FRONT PANEL SIDE (Z > 0)
     // ==========================================
     const CAPSULE_Z = FRONT_Z + 0.015;
-    const CAPSULE_LENGTH = 4.3;  
+    const CAPSULE_LENGTH = 4.3;
     const CAPSULE_RADIUS = 0.31;
     const CAPSULE_DEPTH_SCALE = 0.12;
 
-    // High gloss dark core plate matching the image
-    const capsuleMat = new MeshStandardMaterial({ color: 0x050505, metalness: 0.1, roughness: 0.05 });
     const capsuleGeo = new CapsuleGeometry(CAPSULE_RADIUS, CAPSULE_LENGTH, 8, 24);
-    const capsule = new Mesh(capsuleGeo, capsuleMat);
-    capsule.rotation.z = Math.PI / 2;
-    capsule.scale.z = CAPSULE_DEPTH_SCALE;
-    capsule.position.set(0, 0, CAPSULE_Z);
-    this.group.add(capsule);
+    capsuleGeo.rotateZ(Math.PI / 2);
+    capsuleGeo.scale(1, 1, CAPSULE_DEPTH_SCALE);
+    capsuleGeo.translate(0, 0, CAPSULE_Z);
+    this.group.add(new Mesh(capsuleGeo, capsuleMat));
 
-    // Chrome trim rim outline around the panel
+    // Chrome Trim Rim
     const trimGeo = new CapsuleGeometry(CAPSULE_RADIUS + 0.008, CAPSULE_LENGTH, 8, 24);
-    const trim = new Mesh(trimGeo, silverMat);
-    trim.rotation.z = Math.PI / 2;
-    trim.scale.z = CAPSULE_DEPTH_SCALE * 0.7;
-    trim.position.set(0, 0, CAPSULE_Z - 0.005);
-    this.group.add(trim);
+    trimGeo.rotateZ(Math.PI / 2);
+    trimGeo.scale(1, 1, CAPSULE_DEPTH_SCALE * 0.7);
+    trimGeo.translate(0, 0, CAPSULE_Z - 0.005);
+    silverGeoms.push(trimGeo);
 
-    // Front Port Generation Helper
-    const FRONT_SURFACE_Z = CAPSULE_Z + (CAPSULE_RADIUS * CAPSULE_DEPTH_SCALE);
-    function addFrontPort(x, y, group) {
-      const pGroup = new Group();
-      const base = new Mesh(new CylinderGeometry(0.045, 0.045, 0.04, 16), goldMat);
-      base.rotation.x = Math.PI / 2;
-      const inside = new Mesh(new CylinderGeometry(0.025, 0.025, 0.045, 16), silverMat);
-      inside.rotation.x = Math.PI / 2;
-      const wire = new Mesh(new CylinderGeometry(0.01, 0.01, 0.075, 16), darkPlastMat)
-      wire.rotation.x = Math.PI / 2 ;
-      pGroup.add(base, inside, wire);
-      pGroup.position.set(x, y, FRONT_SURFACE_Z);
-      group.add(pGroup);
+    // Front Ports Collector
+    const FRONT_SURFACE_Z = CAPSULE_Z + CAPSULE_RADIUS * CAPSULE_DEPTH_SCALE;
+    function collectFrontPort(x, y) {
+      const base = new CylinderGeometry(0.045, 0.045, 0.04, 16);
+      base.rotateX(Math.PI / 2);
+      base.translate(x, y, FRONT_SURFACE_Z);
+      goldGeoms.push(base);
+
+      const inside = new CylinderGeometry(0.025, 0.025, 0.045, 16);
+      inside.rotateX(Math.PI / 2);
+      inside.translate(x, y, FRONT_SURFACE_Z);
+      silverGeoms.push(inside);
+
+      const wire = new CylinderGeometry(0.01, 0.01, 0.075, 16);
+      wire.rotateX(Math.PI / 2);
+      wire.translate(x, y, FRONT_SURFACE_Z);
+      darkPlastGeoms.push(wire);
     }
 
-    // Port Row Y Alignment (tighter row spacing based on image)
     const FRONT_TOP_Y = 0.12;
     const FRONT_BOTTOM_Y = -0.12;
-    const STEP_X = 0.20; 
+    const STEP_X = 0.20;
 
-    // Section 1: Digital Markers (5 Columns)
+    // Section 1: Digital Markers
     const S1_CENTER_X = -0.95;
     [-2, -1, 0, 1, 2].forEach(i => {
-      addFrontPort(S1_CENTER_X + (i * STEP_X), FRONT_TOP_Y, this.group);
-      addFrontPort(S1_CENTER_X + (i * STEP_X), FRONT_BOTTOM_Y, this.group);
+      collectFrontPort(S1_CENTER_X + i * STEP_X, FRONT_TOP_Y);
+      collectFrontPort(S1_CENTER_X + i * STEP_X, FRONT_BOTTOM_Y);
     });
 
-    // Section 2: Analog Outputs (5 Columns)
+    // Section 2: Analog Outputs
     const S2_CENTER_X = 0.65;
     [-2, -1, 0, 1, 2].forEach(i => {
-      addFrontPort(S2_CENTER_X + (i * STEP_X), FRONT_TOP_Y, this.group);
-      addFrontPort(S2_CENTER_X + (i * STEP_X), FRONT_BOTTOM_Y, this.group);
+      collectFrontPort(S2_CENTER_X + i * STEP_X, FRONT_TOP_Y);
+      collectFrontPort(S2_CENTER_X + i * STEP_X, FRONT_BOTTOM_Y);
     });
 
-    // Section 3: Analog Inputs (1 Column)
+    // Section 3: Analog Inputs
     const S3_X = 1.75;
-    addFrontPort(S3_X, FRONT_TOP_Y, this.group);
-    addFrontPort(S3_X, FRONT_BOTTOM_Y, this.group);
+    collectFrontPort(S3_X, FRONT_TOP_Y);
+    collectFrontPort(S3_X, FRONT_BOTTOM_Y);
 
-    // Blue Neon Accent Dividers (3 vertical lines from image)
-    const dividerMat = new MeshBasicMaterial({ color: 0x00d8ff });
-    const divGeo = new BoxGeometry(0.012, 0.38, 0.01);
-    function addFrontDivider(x, group) {
-      const div = new Mesh(divGeo, dividerMat);
-      div.position.set(x, 0, FRONT_SURFACE_Z + 0.002);
-      group.add(div);
-    }
-    addFrontDivider(-1.60, this.group); // Left of Digital Markers
-    addFrontDivider(-0.30, this.group); // Between Markers and Outputs
-    addFrontDivider(1.45, this.group);  // Between Outputs and Inputs
-
+    // Front Neon Dividers
+    [-1.60, -0.30, 1.45].forEach(x => {
+      const div = new BoxGeometry(0.012, 0.38, 0.01);
+      div.translate(x, 0, FRONT_SURFACE_Z + 0.002);
+      dividerGeoms.push(div);
+    });
 
     // ==========================================
     // BACK PANEL SIDE (Z < 0)
     // ==========================================
     const BACK_SURFACE_Z = BACK_Z - 0.005;
 
-    // Dual Fan Assembly
-    const fanPlate = new Mesh(new BoxGeometry(1.6, 0.85, 0.01), darkPlastMat);
-    fanPlate.position.set(-1.5, 0, BACK_SURFACE_Z);
-    this.group.add(fanPlate);
+    // Fans
+    const fanPlate = new BoxGeometry(1.6, 0.85, 0.01);
+    fanPlate.translate(-1.5, 0, BACK_SURFACE_Z);
+    darkPlastGeoms.push(fanPlate);
 
-    const fanSilGeo = new CylinderGeometry(0.32, 0.32, 0.01, 16);
-    fanSilGeo.rotateX(Math.PI / 2);
-    const fan1 = new Mesh(fanSilGeo, new MeshStandardMaterial({ color: 0x222222 }));
-    fan1.position.set(-1.9, 0, BACK_SURFACE_Z - 0.005);
-    const fan2 = fan1.clone();
-    fan2.position.set(-1.1, 0, BACK_SURFACE_Z - 0.005);
-    this.group.add(fan1, fan2);
+    [-1.9, -1.1].forEach(x => {
+      const fanSil = new CylinderGeometry(0.32, 0.32, 0.01, 16);
+      fanSil.rotateX(Math.PI / 2);
+      fanSil.translate(x, 0, BACK_SURFACE_Z - 0.005);
+      darkPlastGeoms.push(fanSil);
+    });
 
     // Green Terminal Blocks
     const greenXPositions = [-0.32, 0.04, 0.40, 0.76, 1.14, 1.50];
-    
     const BLOCK_W = 0.24;
     const BLOCK_H = 0.14;
     const BLOCK_D = 0.08;
-    const PIN_COUNT = 4; // Each block houses 4 terminal slots
-    
-    greenXPositions.forEach(x => {
-      const blockGroup = new Group();
-      blockGroup.position.set(x, 0.35, BACK_SURFACE_Z);
+    const PIN_COUNT = 4;
+    const spacing = BLOCK_W / (PIN_COUNT + 1);
 
-      // Main outer shell (back wall / frame)
-      const shellGeo = new BoxGeometry(BLOCK_W, BLOCK_H, BLOCK_D * 0.4);
-      const shell = new Mesh(shellGeo, greenMat);
-      shell.position.z = -BLOCK_D * 0.2;
-      blockGroup.add(shell);
+    greenXPositions.forEach(bx => {
+      const by = 0.35;
+      const bz = BACK_SURFACE_Z;
 
-      // Top and bottom protective lips to form the "hollow box" shape
-      const lipGeo = new BoxGeometry(BLOCK_W, 0.015, BLOCK_D);
-      const topLip = new Mesh(lipGeo, greenMat);
-      topLip.position.set(0, (BLOCK_H / 2) - 0.0075, -BLOCK_D / 2);
-      
-      const botLip = topLip.clone();
-      botLip.position.y = -(BLOCK_H / 2) + 0.0075;
-      
-      // Side walls
-      const sideGeo = new BoxGeometry(0.015, BLOCK_H, BLOCK_D);
-      const leftWall = new Mesh(sideGeo, greenMat);
-      leftWall.position.set(-(BLOCK_W / 2) + 0.0075, 0, -BLOCK_D / 2);
-      
-      const rightWall = leftWall.clone();
-      rightWall.position.x = (BLOCK_W / 2) - 0.0075;
+      const shell = new BoxGeometry(BLOCK_W, BLOCK_H, BLOCK_D * 0.4);
+      shell.translate(bx, by, bz - BLOCK_D * 0.2);
+      greenGeoms.push(shell);
 
-      blockGroup.add(topLip, botLip, leftWall, rightWall);
+      const topLip = new BoxGeometry(BLOCK_W, 0.015, BLOCK_D);
+      topLip.translate(bx, by + (BLOCK_H / 2) - 0.0075, bz - BLOCK_D / 2);
+      greenGeoms.push(topLip);
 
-      // Interior vertical divider prongs/teeth visible in the image
-      const toothGeo = new BoxGeometry(0.012, BLOCK_H * 0.7, BLOCK_D * 0.8);
-      const interiorMat = new MeshStandardMaterial({ color: 0x008754, roughness: 0.6 }); // Slightly darker inside for depth shadows
-      
-      // Calculate spacing to fit 4 prongs inside evenly
-      const spacing = BLOCK_W / (PIN_COUNT + 1);
+      const botLip = new BoxGeometry(BLOCK_W, 0.015, BLOCK_D);
+      botLip.translate(bx, by - (BLOCK_H / 2) + 0.0075, bz - BLOCK_D / 2);
+      greenGeoms.push(botLip);
+
+      const leftWall = new BoxGeometry(0.015, BLOCK_H, BLOCK_D);
+      leftWall.translate(bx - (BLOCK_W / 2) + 0.0075, by, bz - BLOCK_D / 2);
+      greenGeoms.push(leftWall);
+
+      const rightWall = new BoxGeometry(0.015, BLOCK_H, BLOCK_D);
+      rightWall.translate(bx + (BLOCK_W / 2) - 0.0075, by, bz - BLOCK_D / 2);
+      greenGeoms.push(rightWall);
+
       for (let i = 1; i <= PIN_COUNT; i++) {
-        const tooth = new Mesh(toothGeo, interiorMat);
-        tooth.position.set(
-          -(BLOCK_W / 2) + (i * spacing), 
-          0, 
-          -BLOCK_D * 0.5
-        );
-        blockGroup.add(tooth);
+        const tooth = new BoxGeometry(0.012, BLOCK_H * 0.7, BLOCK_D * 0.8);
+        tooth.translate(bx - (BLOCK_W / 2) + (i * spacing), by, bz - BLOCK_D * 0.5);
+        greenInteriorGeoms.push(tooth);
       }
-
-      this.group.add(blockGroup);
     });
 
-    // Connectivity Ports
-    const lan = new Mesh(new BoxGeometry(0.14, 0.14, 0.08), silverMat);
-    lan.position.set(0.0, 0.1, BACK_SURFACE_Z - 0.04);
+    // Rear Connectivity Ports
+    const lan = new BoxGeometry(0.14, 0.14, 0.08);
+    lan.translate(0.0, 0.1, BACK_SURFACE_Z - 0.04);
+    silverGeoms.push(lan);
 
-    const usbStack = new Mesh(new BoxGeometry(0.14, 0.18, 0.06), silverMat);
-    usbStack.position.set(0.0, -0.18, BACK_SURFACE_Z - 0.03);
-    const qsfp = new Mesh(new BoxGeometry(0.22, 0.12, 0.08), silverMat);
-    qsfp.position.set(0.4, 0.1, BACK_SURFACE_Z - 0.04);
-    const syncPort = new Mesh(new BoxGeometry(0.35, 0.08, 0.04), silverMat);
-    syncPort.position.set(0.85, 0.1, BACK_SURFACE_Z - 0.02);
-    this.group.add(lan, usbStack, qsfp, syncPort);
+    const usbStack = new BoxGeometry(0.14, 0.18, 0.06);
+    usbStack.translate(0.0, -0.18, BACK_SURFACE_Z - 0.03);
+    silverGeoms.push(usbStack);
+
+    const qsfp = new BoxGeometry(0.22, 0.12, 0.08);
+    qsfp.translate(0.4, 0.1, BACK_SURFACE_Z - 0.04);
+    silverGeoms.push(qsfp);
+
+    const syncPort = new BoxGeometry(0.35, 0.08, 0.04);
+    syncPort.translate(0.85, 0.1, BACK_SURFACE_Z - 0.02);
+    silverGeoms.push(syncPort);
 
     // Multi-pin Blocks
-    const mp1 = new Mesh(new BoxGeometry(0.22, 0.32, 0.06), darkPlastMat);
-    mp1.position.set(1.25, 0.12, BACK_SURFACE_Z - 0.03);
-    const mp2 = mp1.clone();
-    mp2.position.set(1.55, 0.12, BACK_SURFACE_Z - 0.03);
-    this.group.add(mp1, mp2);
+    [1.25, 1.55].forEach(x => {
+      const mp = new BoxGeometry(0.22, 0.32, 0.06);
+      mp.translate(x, 0.12, BACK_SURFACE_Z - 0.03);
+      darkPlastGeoms.push(mp);
+    });
 
-    // Rear SMA Ports
-    function addRearSMA(x, y, group) {
-      const base = new Mesh(new CylinderGeometry(0.035, 0.035, 0.06, 12), goldMat);
-      base.rotation.x = Math.PI / 2;
-      base.position.set(x, y, BACK_SURFACE_Z - 0.03);
-      group.add(base);
-    }
-    addRearSMA(0.35, -0.18, this.group);
-    addRearSMA(0.70, -0.18, this.group);
-    addRearSMA(1.05, -0.18, this.group);
-    addRearSMA(1.35, -0.18, this.group);
-    addRearSMA(1.65, -0.18, this.group);
+    // Rear SMAs
+    [0.35, 0.70, 1.05, 1.35, 1.65].forEach(x => {
+      const base = new CylinderGeometry(0.035, 0.035, 0.06, 12);
+      base.rotateX(Math.PI / 2);
+      base.translate(x, -0.18, BACK_SURFACE_Z - 0.03);
+      goldGeoms.push(base);
+    });
 
     // Power Module
-    const pwrTrim = new Mesh(new BoxGeometry(0.26, 0.32, 0.02), redMat);
-    pwrTrim.position.set(2.1, 0.22, BACK_SURFACE_Z - 0.01);
-    const pwrSwitch = new Mesh(new BoxGeometry(0.2, 0.24, 0.03), darkPlastMat);
-    pwrSwitch.position.set(2.1, 0.22, BACK_SURFACE_Z - 0.02);
-    const acSocket = new Mesh(new BoxGeometry(0.26, 0.3, 0.06), darkPlastMat);
-    acSocket.position.set(2.1, -0.16, BACK_SURFACE_Z - 0.03);
-    this.group.add(pwrTrim, pwrSwitch, acSocket);
+    const pwrTrim = new BoxGeometry(0.26, 0.32, 0.02);
+    pwrTrim.translate(2.1, 0.22, BACK_SURFACE_Z - 0.01);
+    this.group.add(new Mesh(pwrTrim, redMat));
+
+    const pwrSwitch = new BoxGeometry(0.2, 0.24, 0.03);
+    pwrSwitch.translate(2.1, 0.22, BACK_SURFACE_Z - 0.02);
+    darkPlastGeoms.push(pwrSwitch);
+
+    const acSocket = new BoxGeometry(0.26, 0.3, 0.06);
+    acSocket.translate(2.1, -0.16, BACK_SURFACE_Z - 0.03);
+    darkPlastGeoms.push(acSocket);
+
+    // ==========================================
+    // BATCH MERGES
+    // ==========================================
+    const mergedGold = safeMerge(goldGeoms);
+    if (mergedGold) this.group.add(new Mesh(mergedGold, goldMat));
+
+    const mergedSilver = safeMerge(silverGeoms);
+    if (mergedSilver) this.group.add(new Mesh(mergedSilver, silverMat));
+
+    const mergedDarkPlast = safeMerge(darkPlastGeoms);
+    if (mergedDarkPlast) this.group.add(new Mesh(mergedDarkPlast, darkPlastMat));
+
+    const mergedGreen = safeMerge(greenGeoms);
+    if (mergedGreen) this.group.add(new Mesh(mergedGreen, greenMat));
+
+    const mergedGreenInterior = safeMerge(greenInteriorGeoms);
+    if (mergedGreenInterior) this.group.add(new Mesh(mergedGreenInterior, greenInteriorMat));
+
+    const mergedDividers = safeMerge(dividerGeoms);
+    if (mergedDividers) this.group.add(new Mesh(mergedDividers, dividerMat));
+  }
+
+  getGroup() {
+    return this.group;
   }
 }
