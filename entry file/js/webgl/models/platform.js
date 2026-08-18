@@ -7,12 +7,21 @@ export default class Platform {
     }
 
     buildPlatform() {
+        // Pre-orient and position the geometry to reduce matrix recalculation
         const floorGeometry = new THREE.PlaneGeometry(200, 200);
-        const floorMaterial = new THREE.MeshPhysicalMaterial({ color:  0x777777, roughness: 0.8});
+        floorGeometry.rotateX(-Math.PI / 2);
+        floorGeometry.translate(0, -8, 0);
+
+        // Standard material is lighter on the GPU pipeline than Physical
+        const floorMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x777777, 
+            roughness: 0.8,
+            metalness: 0.1
+        });
+
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.receiveShadow = true;
         this.group.add(floor);
-        floor.rotation.x = -Math.PI / 2;
-        floor.position.y = -8;
     }
 
     getGroup() {
