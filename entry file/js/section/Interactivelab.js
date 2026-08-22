@@ -44,9 +44,7 @@ export default class InteractiveLab {
 
         this.element.innerHTML = `
         <div class='canvas_wrapper h-full w-full flex flex-col items-center text-text relative'>
-            <span class="rounded-full border border-border text-xs uppercase tracking-[0.3em] mb-4 px-4 py-1 -mt-10">
-                Laboratory - ${this.mode}
-            </span>
+            
             <div class='relative min-h-[90vh] w-[80vw] mb-2'>
                 <canvas class='webgl max-h-[90vh] max-w-[80vw] rounded-lg border-border'></canvas>
                 
