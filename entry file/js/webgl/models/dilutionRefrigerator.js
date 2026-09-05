@@ -394,15 +394,15 @@ export default class DilutionRefrigerator {
         // RF Routing Wire Tubes
         const rfPoints = [];
         for (let i = 0; i <= 60; i++) {
-            const z = 0.46 + (i / 60) * 9.54;
-            const x = Math.sin((z - 0.14) * 2.49) * 0.2 + 0.01;
-            const y = Math.cos((z - 0.14) * 2.49) * 0.2;
+            const z = 0.14 + (i / 60) * 10;
+            const x = Math.sin(z * 1.5) * 0.2;
+            const y = Math.cos(z * 1.5) * 0.2;
             rfPoints.push(new THREE.Vector3(x, y, z));
         }
         const rfBaseTube = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rfPoints), 60, 0.035, 6, false);
 
-        for (let i = -1.18; i < 1.2; i += 1) {
-            for (let j = -1.08; j < 1.2; j += 1) {
+        for (let i = -1.2; i < 1.2; i += 1) {
+            for (let j = -1.0; j < 1.2; j += 1) {
                 const cGeo = rfBaseTube.clone();
                 cGeo.translate(j, i, 0);
                 cGeo.applyMatrix4(rfMat);
@@ -411,7 +411,7 @@ export default class DilutionRefrigerator {
         }
 
         // RF Filter Assemblies
-        for (let k = -2.0; k <= -0.2; k += 1) {
+        for (let k = -2.0; k <= 0; k += 1) {
             const fBox = new THREE.BoxGeometry(0.4, 0.2, 2.5);
             fBox.rotateX(Math.PI / 2);
             fBox.translate(1.17 + k, 0, 0.34);

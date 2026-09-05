@@ -12,6 +12,15 @@ export default class classicalComputer {
         this.matDark = new THREE.MeshStandardMaterial({ color: 0x333333 });
         this.matScreen = new THREE.MeshStandardMaterial({ color: 0x111111 });
         this.matMetal = new THREE.MeshStandardMaterial({ color: 0x949393, metalness: 1, roughness: 0.15 });
+        
+        // NEW: Black Glass Material for the Monitor Screen
+        this.matBlackGlass = new THREE.MeshPhysicalMaterial({ 
+            color: 0x050505, 
+            metalness: 0.2, 
+            roughness: 0.1, 
+            clearcoat: 1.0, 
+            clearcoatRoughness: 0.1 
+        });
 
         this.buildModel();
     }
@@ -82,18 +91,6 @@ export default class classicalComputer {
         bezelGeo.translate(0, 3.9, 0.08);
         darkGeoms.push(bezelGeo);
 
-        const dotPositions = [
-            [-0.5, 4.2], [0.2, 4.3], [0.6, 4.1], [-0.3, 3.8], 
-            [0.4, 3.6], [-0.6, 3.4], [0.5, 3.4], [0, 4.0]
-        ];
-
-        dotPositions.forEach(([x, y]) => {
-            const dot = new THREE.CylinderGeometry(0.04, 0.04, 0.18, 8);
-            dot.rotateX(Math.PI / 2);
-            dot.translate(x, y, 0.1);
-            darkGeoms.push(dot);
-        });
-
         // 3. Metal Components (Handle, Stand Base & Neck)
         const handleGeo = new THREE.BoxGeometry(0.2, 0.05, 0.1);
         handleGeo.translate(-0.7, 1.1, 0.98);
@@ -106,11 +103,14 @@ export default class classicalComputer {
         const neckGeo = new THREE.CylinderGeometry(0.1, 0.15, 0.8, 16);
         neckGeo.translate(0, 3.1, 0);
         metalGeoms.push(neckGeo);
-
-        // 4. LCD Screen Mesh (Single Draw Call)
+        
         const lcdGeo = new THREE.BoxGeometry(0.6, 0.25, 0.06);
         lcdGeo.translate(-0.4, 2.35, 0.93);
         this.group.add(new THREE.Mesh(lcdGeo, this.matScreen));
+
+        const monitorScreenGeo = new THREE.BoxGeometry(1.7, 1.4, 0.02);
+        monitorScreenGeo.translate(0, 3.9, 0.185);
+        this.group.add(new THREE.Mesh(monitorScreenGeo, this.matBlackGlass));
 
         // 5. Batch & Merge
         const mergedBody = safeMerge(bodyGeoms);
@@ -129,6 +129,6 @@ export default class classicalComputer {
     }
 
     getGroup() {
-        return this.group;
+        return this.group; // Fixed the "this.groupimport" typo
     }
 }

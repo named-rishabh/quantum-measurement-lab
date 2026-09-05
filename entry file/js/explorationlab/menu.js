@@ -21,7 +21,8 @@ const menuConfig = {
             subItems: [
                 { title: "2.1 VNA", target: "VNA", desc: "The vector network analyzer is used generate and measure microwave signals for characterizing the resonanter and qubit system ." },
                 { title: "2.2 Octave", target: "Octave", desc: "The octave is a microwave control and readout system to generate process,measure signal for quantum experiment ." },
-                { title: "2.3 Thermometry unit", target: "Thermometry", desc: "The thermometry unit measure the tempreture at different stage of cryogenic system ." },
+                { title: "2.3 OPX", target: "OPX", desc: "The OPX is a microwave control and readout system to generate process,measure signal for quantum experiment ." },
+                { title: "2.4 Thermometry unit", target: "Thermometry", desc: "The thermometry unit measure the tempreture at different stage of cryogenic system ." },
             ]
         },
         {
@@ -118,3 +119,4 @@ export function setupMenuEventListeners(cameraControllerCallback) {
         }
     });
 }
+

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 export default class QubitCavity {
     constructor() {
@@ -108,10 +109,10 @@ export default class QubitCavity {
         const centerSupport = new THREE.Mesh(centerSupportGeo, copperMaterial);
         centerSupport.position.set(0, -1.45, -0.2);
         const centerSupportGeo2 = new THREE.BoxGeometry(0.2, 0.8, 0.05);
-        const centerSupport2 = new THREE.Mesh(centerSupportGeo2, copperMaterial);
-        centerSupport2.position.set(0, -2, 0.2);
+        this.centerSupport2 = new THREE.Mesh(centerSupportGeo2, copperMaterial);
+        this.centerSupport2.position.set(0, -2, 0.2);
 
-        this.group.add(leftSupport, leftFoot, rightSupport, rightFoot, centerSupport, centerSupport2);
+        this.group.add(leftSupport, leftFoot, rightSupport, rightFoot, centerSupport);
 
         const silverMaterial = new THREE.MeshStandardMaterial({
             color: 0xc0c0c0,
@@ -119,18 +120,51 @@ export default class QubitCavity {
             roughness: 0.3
         });
 
-        const leftHalf = this.createCavityHalf(silverMaterial);
-        leftHalf.position.set(0, -2, 0.1);
-        leftHalf.rotation.y = Math.PI;
-        leftHalf.rotation.z = Math.PI / 2;
-        leftHalf.scale.set(0.3, 0.3, 0.2);
+        this.leftHalf = this.createCavityHalf(silverMaterial);
+        this.leftHalf.position.set(0, -2, 0.1);
+        this.leftHalf.rotation.y = Math.PI;
+        this.leftHalf.rotation.z = Math.PI / 2;
+        this.leftHalf.scale.set(0.3, 0.3, 0.2);
 
         const rightHalf = this.createCavityHalf(silverMaterial);
         rightHalf.position.set(0, -2, -0.1);
         rightHalf.rotation.z = Math.PI / 2;
         rightHalf.scale.set(0.3, 0.3, 0.2);
 
-        this.group.add(leftHalf, rightHalf);
+        const chipGeo = new THREE.BoxGeometry(0.5, 0.25, 0.02);
+        const chipMat = new THREE.MeshStandardMaterial({
+            color: 0x111122, // Dark glossy substrate
+            metalness: 0.4,
+            roughness: 0.2
+        });
+        const qubitChip = new THREE.Mesh(chipGeo, chipMat);
+
+        // Gold pads bridging to the cavity
+        const padGeo = new THREE.BoxGeometry(0.08, 0.26, 0.022);
+        const goldMat = new THREE.MeshStandardMaterial({
+            color: 0xd4af37,
+            metalness: 0.9,
+            roughness: 0.2
+        });
+        const leftPad = new THREE.Mesh(padGeo, goldMat);
+        leftPad.position.set(-0.21, 0, 0);
+        const rightPad = new THREE.Mesh(padGeo, goldMat);
+        rightPad.position.set(0.21, 0, 0);
+        
+        // Center qubit trace (just a tiny visual detail)
+        const traceGeo = new THREE.BoxGeometry(0.2, 0.02, 0.022);
+        const centerTrace = new THREE.Mesh(traceGeo, silverMaterial);
+
+        qubitChip.add(leftPad, rightPad, centerTrace);
+
+        // The face of the cavity half in local space is at z = 0.5. 
+        // We set the chip slightly above it to prevent z-fighting.
+        qubitChip.position.set(0, 0, 0.51); 
+        
+        // Add the chip directly to the stationary right half
+        rightHalf.add(qubitChip);
+        
+        this.group.add(rightHalf);
     }
 
     buildSMAConnectors() {
@@ -259,13 +293,63 @@ export default class QubitCavity {
             dummy.position.set(px, py + 0.12, pz + 0.12);
             dummy.rotation.set(0, 0, 0);
             dummy.updateMatrix();
-            raHexInstanced.setMatrixAt(raHexIdx++, dummy.matrix);
+            raHexInstanced.setMatrixAt(raHexIdx++, dummy.matrix);        
+        
+        
         }
 
         this.group.add(
             flangeInstanced, sBarrelInstanced, sHexInstanced, ScrewInstanced,
             raHexInstanced, raBarrelInstanced, elbowInstanced, raTubeInstanced
         );
+
+
+this.smaGroup = new THREE.Group();
+        this.smaGroup.add(
+            flangeInstanced, sBarrelInstanced, sHexInstanced, ScrewInstanced,
+            raHexInstanced, raBarrelInstanced, elbowInstanced, raTubeInstanced
+        );
+        
+        // 3. CREATE THE HINGE PIVOT
+        this.chestHinge = new THREE.Group();
+        // Position the hinge at the top edge of the front cavity (y = -1.55)
+        this.chestHinge.position.set(0, -1.55, 0.1); 
+
+        // Add leftHalf to the hinge and offset it so its global position remains (0, -2, 0.1)
+        this.leftHalf.position.set(0, -0.45, 0); 
+        this.chestHinge.add(this.leftHalf);
+
+        this.centerSupport2.position.set(0, -0.45, 0.1);
+        this.chestHinge.add(this.centerSupport2);
+
+        // Add smaGroup to the hinge and offset it so its global position remains (0, 0, 0)
+        this.smaGroup.position.set(0, 1.55, -0.1);
+        this.chestHinge.add(this.smaGroup);
+
+        // Finally, add the hinge assembly to the main group
+        this.group.add(this.chestHinge);
+    }
+
+    // 4. Animate the hinge rotation
+    openCavity() {
+        if (!this.chestHinge) return;
+        
+        // Rotate -90 degrees on the X-axis (swings upwards like a chest)
+        gsap.to(this.chestHinge.rotation, {
+            x: -Math.PI / 2, 
+            duration: 1.5,
+            ease: "power2.inOut"
+        });
+    }
+
+    closeCavity() {
+        if (!this.chestHinge) return;
+        
+        gsap.to(this.chestHinge.rotation, {
+            x: 0,
+            duration: 1.5,
+            ease: "power2.inOut"
+        });        
     }
 
     getGroup() {
