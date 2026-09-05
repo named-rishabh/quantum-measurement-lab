@@ -41,12 +41,15 @@ export default class InteractiveLab {
         
         const isLabPage = window.location.pathname.endsWith('lab.html') || window.location.pathname.includes('/lab');
         const isIndexPage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
+        const wrapperClass = isLabPage ? 'canvas_wrapper h-screen w-screen flex flex-col items-center text-text relative' : 'canvas_wrapper h-full w-full flex flex-col items-center text-text relative';
+        const canvasSectionClass = isLabPage ? 'relative h-screen w-screen' : 'relative min-h-[90vh] w-[80vw] mb-2';
+        const canvasClass = isLabPage ? 'webgl h-full w-full max-h-none max-w-none rounded-lg border-border' : 'webgl max-h-[90vh] max-w-[80vw] rounded-lg border-border';
 
         this.element.innerHTML = `
-        <div class='canvas_wrapper h-full w-full flex flex-col items-center text-text relative'>
+        <div class='${wrapperClass}'>
             
-            <div class='relative min-h-[90vh] w-[80vw] mb-2'>
-                <canvas class='webgl max-h-[90vh] max-w-[80vw] rounded-lg border-border'></canvas>
+            <div class='${canvasSectionClass}'>
+                <canvas class='${canvasClass}'></canvas>
                 
                 ${isIndexPage ? 
                     `
