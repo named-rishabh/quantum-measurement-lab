@@ -10,6 +10,8 @@ const menuConfig = {
                 { title: "1.3 Still", target: "still", desc: "The distillation stage,is used to evaporate Helium-3 from the mixing of He-3/He-4,enabling continuous circulation in dilution refigrator " },
                 { title: "1.4 100mK Plate", target: "plate_100mk", desc: "The 100mK thermal plate,provide an intermediate low tempreture before they reach the mixing chamber." },
                 { title: "1.5 Mixing Chamber", target: "mixing_chamber", desc: "The mixing chamber for base temperature,is the coldest part of dilution refigrator where He-3 crosses from concentrated to diluted phase by absorbing heat from mixing chamber cool down about 10mk ." },
+                { title: "1.6 Cavity", target: "cavity", desc: "The cavity is a microwave resonator,used to couple the qubit and readout the qubit state." },
+                { title: "1.7 Qubit", target: "qubit", desc: "The qubit is a quantum bit,used to store and process quantum information." },
             ]
         },
         {

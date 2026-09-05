@@ -95,10 +95,12 @@ export default class DilutionRefrigerator {
                 const holeRadius = 0.3;
                 for (let i = 0; i < numHoles; i++) {
                     const angle = (i / numHoles) * Math.PI;
-                    const x = Math.cos(angle) * config.radius * 0.6;
-                    const y = Math.sin(angle) * config.radius * 0.6;
+                    const holeScale = i === 1 ? 0.4 : 0.6;
+                    const radius = i === 1 ? 0.42 : holeRadius;
+                    const x = Math.cos(angle) * config.radius * holeScale;
+                    const y = Math.sin(angle) * config.radius * holeScale;
                     const holePath = new THREE.Path();
-                    holePath.absarc(x, y, holeRadius, 0, 2 * Math.PI, true);
+                    holePath.absarc(x, y, radius, 0, 2 * Math.PI, true);
                     shape.holes.push(holePath);
                 }
             }
@@ -113,7 +115,7 @@ export default class DilutionRefrigerator {
             { r: 0.15, d: 11.7, x: 0.92, y: 0, z: -0.74 },
             { r: 0.2, d: 0.1, x: 0.92, y: 0, z: -0.74 },
             { r: 0.16, d: 11.7, x: -1.04, y: 0, z: 0.77 },
-            { r: 0.16, d: 11.7, x: 0.95, y: 0, z: 0.79 },
+            { r: 0.16, d: 11.7, x: 0.95, y: 0, z: 0.77 },
             { r: 0.23, d: 0.1, x: -1.04, y: 0, z: 0.77 },
             { r: 0.23, d: 0.1, x: 0.95, y: 0, z: 0.75 }
         ];

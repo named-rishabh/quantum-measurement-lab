@@ -9,7 +9,7 @@ import Platform from "../models/Platform.js";
 import classicalComputer from "../models/classicalComp.js";
 import Glasswall from "../models/glasswall.js";
 import CryoCase from "../models/cryocase.js";
-import Mixingchamber from "../models/mixingchamber.js";
+import QubitCavity from "../models/qubitcavity.js";
 
 export default class World {
     constructor(experience, loadingManager) {
@@ -58,14 +58,9 @@ export default class World {
         this.cryoCase = new CryoCase();
         this.scene.add(this.cryoCase.getGroup());
 
-        this.mixingchamber = new Mixingchamber();
-        this.scene.add(this.mixingchamber.getGroup());
+        this.qubitcavity = new QubitCavity();
+        this.scene.add(this.qubitcavity.getGroup());
 
-        // Using your Compressor class
-
-
-        const stand = new DilutionRefrigerator();
-        const ghsGroup = stand.getGroup();
 
     // Call the export function (e.g., on a button click or right after instantiating)
         // this.exportToGLB(ghsGroup, 'DilutionRefrigerator_.glb');
