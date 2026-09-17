@@ -16,10 +16,10 @@ export default class FreqExp1 {
 
     createDesktop() {
         this.element.innerHTML = `
-        <div id="experiment-desktop" class="min-h-screen bg-background text-text p-8 flex justify-center items-center">
+        <div id="experiment-desktop" class="h-screen bg-background text-text p-8 flex justify-center items-center">
             
             <!-- Main Grid: Left Column (Sidebar) & Right Column (Experimental Setup) -->
-            <div class="w-full max-w-7xl h-[88vh] grid grid-cols-12 gap-6">
+            <div class="w-full h-screen text-text p-8 mt-10 bg-background  grid grid-cols-12 gap-6">
 
                 <!-- Left Column: Context and Control stacked in a Flexbox -->
                 <div class="col-span-4 h-full flex flex-col gap-6">
@@ -72,21 +72,14 @@ export default class FreqExp1 {
                                     class="w-full h-1.5 bg-border rounded-lg appearance-none cursor-pointer accent-primary">
                             </div>
 
-                            <!-- Sweep Span -->
-                            <div class="space-y-1.5">
-                                <div class="flex justify-between text-sm font-medium">
-                                    <label for="sweep-span">Sweep Span (MHz):</label>
-                                    <span id="sweep-span-val" class="font-mono text-sm text-text">40.00</span>
-                                </div>
-                                <input id="sweep-span" type="range" min="1.00" max="100.00" step="0.5" value="40" 
-                                    class="w-full h-1.5 bg-border rounded-lg appearance-none cursor-pointer accent-primary">
-                            </div>
+                            
                         </div>
                     </div>
 
                 </div>
 
                 <!-- Right Column: Experimental Setup Card -->
+                
                 <div class="col-span-8 h-full bg-panel border border-border rounded-3xl p-8 flex flex-col justify-between shadow-sm relative overflow-hidden">
                     <div class="flex items-center justify-between">
                         <span class="px-4 py-1 rounded-full border border-border text-xs uppercase tracking-[0.3em] text-muted-foreground">
@@ -104,6 +97,7 @@ export default class FreqExp1 {
                         </p>
                     </div>
                 </div>
+                
 
             </div>
         </div>
@@ -115,7 +109,7 @@ export default class FreqExp1 {
         const sliders = [
             { id: 'vna-power', valId: 'vna-power-val', key: 'vnaPower', decimals: 2 },
             { id: 'center-freq', valId: 'center-freq-val', key: 'centerFreq', decimals: 2 },
-            { id: 'sweep-span', valId: 'sweep-span-val', key: 'sweepSpan', decimals: 2 }
+            
         ];
 
         sliders.forEach(({ id, valId, key, decimals }) => {
